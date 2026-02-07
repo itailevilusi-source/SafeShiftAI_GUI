@@ -1,0 +1,1 @@
+﻿ALTER TABLE Employees ADD RealID NVARCHAR(9);

@@ -4,18 +4,33 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static Shift_Safe_Smart.Employee;
 
-namespace Shift_Safe_Smart
+
+namespace SafeShiftAI_GUI
 {
     internal class FitnessEvaluator
     {
         private Data_Layer data;//Data_Layer כפרמטר חיבור הנתונים למחלקת פונקציית הכושר היא מקבלת את 
 
+
+        //  חייבים מילון בגלל הsql 
+        private Dictionary<int, Employee> _employeeMap;
+
         // בנאי שמקבל את מאגר הנתונים
         public FitnessEvaluator(Data_Layer dataManager)
         {
             this.data = dataManager;
+
+
+            // --- אתחול המילון (חובה כדי למנוע קריסה) ---
+            _employeeMap = new Dictionary<int, Employee>();
+            foreach (var emp in data.Employees)//Employee emp in data.Employees=var
+            {
+                if (!_employeeMap.ContainsKey(emp.ID))
+                {
+                    _employeeMap.Add(emp.ID, emp);
+                }
+            }
         }
 
         // הפונקציה המרכזית שמקבלת לוח (כרומוזום) ומחזירה ציון
@@ -42,7 +57,8 @@ namespace Shift_Safe_Smart
                         // עובד במשמרת בוקר של מחר (day+1, shift=0)
                         int empIdMorning = chromosome[day + 1, 0, role];
 
-                        if (empIdNight == empIdMorning)
+                        //  בדיקה ששניהם לא אפס כדי למנוע באגים
+                        if (empIdNight != 0 && empIdMorning != 0 && empIdNight == empIdMorning)
                         {
                             // אותו עובד שובץ לבוקר מיד אחרי לילה
                             score -= 100;
@@ -62,8 +78,11 @@ namespace Shift_Safe_Smart
                         int employeeId = chromosome[day, shift, role];
 
                         //בדיקה כפילות עובד במשמרת , קנס של 10,000 נקודות עבור כל משמרת שבה עובד משובץ יותר מפעם אחת
-                       
-                        if (workersToday.Contains(employeeId))
+                        if (employeeId != 0 && _employeeMap.ContainsKey(employeeId))
+                     {  
+                            Employee currentEmp = _employeeMap[employeeId];
+
+                            if (workersToday.Contains(employeeId))
                         {
                             // העובד כבר שובץ היום במשמרת אחרת
                             score -= 10000;
@@ -99,16 +118,23 @@ namespace Shift_Safe_Smart
                             // אם אין התאמה בין התפקיד נהג למשבצת 
                             score -= 10000;
                         }
- 
+
+                      }
                     }
+                    
                     
                     int mngId = chromosome[day, shift, 0]; // מנהל
                     int medId = chromosome[day, shift, 1]; // רופא
                     int drvId = chromosome[day, shift, 2]; // נהג
 
-                    // העדפת ותק גבוה: קנס של 100 נקודות על צוותים שהותק המצטבר שלהם נמוך מ10-שנים אילוץ רצויי
-                    int SumSeniority= data.Employees[mngId].Seniority+ data.Employees[medId].Seniority+ data.Employees[drvId].Seniority;
-                    if (SumSeniority<10)
+                    // רק אם כל השלושה קיימים במילון - מחשבים
+                    if (_employeeMap.ContainsKey(mngId) &&
+                        _employeeMap.ContainsKey(medId) &&
+                        _employeeMap.ContainsKey(drvId))
+                    {
+                        // העדפת ותק גבוה: קנס של 100 נקודות על צוותים שהותק המצטבר שלהם נמוך מ10-שנים אילוץ רצויי
+                        int SumSeniority= _employeeMap[mngId].Seniority +_employeeMap[medId].Seniority +_employeeMap[drvId].Seniority;
+                        if (SumSeniority<10)
                     {
                         score -= 100;
                     }
@@ -117,12 +143,13 @@ namespace Shift_Safe_Smart
 
                     // שליפת הערכים מהמטריצה (3 זוגות אפשריים בצוות של 3)
                     int synergySum = 0;
-                    synergySum += data.SynergyMatrix[mngId, medId];
-                    synergySum += data.SynergyMatrix[mngId, drvId];
-                    synergySum += data.SynergyMatrix[medId, drvId];
+                        // מוודאים שלא חורגים מגבולות המערך
+                        if (mngId < 1000 && medId < 1000) synergySum += data.SynergyMatrix[mngId, medId];
+                        if (mngId < 1000 && drvId < 1000) synergySum += data.SynergyMatrix[mngId, drvId];
+                        if (medId < 1000 && drvId < 1000) synergySum += data.SynergyMatrix[medId, drvId];
 
-                    //נוסחת בונוס הסינרגיה :בונוס הסינרגיה = 5 × סך ציון הסינרגיה המצטבר מכל הצוותים בלוח
-                    score += (synergySum * 5);
+                        //נוסחת בונוס הסינרגיה :בונוס הסינרגיה = 5 × סך ציון הסינרגיה המצטבר מכל הצוותים בלוח
+                        score += (synergySum * 5);
 
                     // סינרגיה בין הצוות חייבת להיות מטווח מינימלי: קנס של 10,000 נקודות על כל צוות שהציון המצטבר שלו נמוך מ 30 
 
@@ -130,10 +157,12 @@ namespace Shift_Safe_Smart
                     {
                         score -= 10000;
                     }
+                    }
                 }
             }
 
             return score;
+            // return Math.Max(0, score); //   לא מחזירים ציון שלילי,פתרון שהוא 0 נחשב לזבל והוא לא ימשיך באלגוריתם הגנטי
         }
     }
 }

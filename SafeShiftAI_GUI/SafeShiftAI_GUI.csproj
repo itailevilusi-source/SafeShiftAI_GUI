@@ -103,10 +103,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="SafeShiftDB.mdf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="SafeShiftDB_log.ldf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <DependentUpon>SafeShiftDB.mdf</DependentUpon>
     </Content>
   </ItemGroup>

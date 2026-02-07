@@ -9,17 +9,15 @@ namespace SafeShiftAI_GUI
 {
     public class DatabaseHelper
     {
-        // מחרוזת החיבור - משתמשת בנתיב יחסי כדי שזה יעבוד בכל מחשב
         private string connectionString;
 
         public DatabaseHelper()
         {
-            // איתור הנתיב של הקובץ mdf באופן דינמי
+            // חיבור דינמי ל-DB
             string dbFileName = "SafeShiftDB.mdf";
             string projectFolder = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.Parent.FullName;
             string dbPath = Path.Combine(projectFolder, "SafeShiftAI_GUI", dbFileName);
 
-            // אם לא מוצא שם, נסה בתיקייה הנוכחית (למקרה של ריצה רגילה)
             if (!File.Exists(dbPath))
             {
                 dbPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, dbFileName);
@@ -28,29 +26,25 @@ namespace SafeShiftAI_GUI
             connectionString = $@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename={dbPath};Integrated Security=True";
         }
 
-        // פונקציה להוספת עובד חדש
-        public void AddEmployee(string name, string role)
+        // --- הוספת עובד (כולל תעודת זהות) ---
+        public void AddEmployee(string realId, string name, string role, int seniority)
         {
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                string query = "INSERT INTO Employees (Name, Role) VALUES (@Name, @Role)";
+                // הוספנו את RealID לשאילתה
+                string query = "INSERT INTO Employees (RealID, Name, Role, Seniority) VALUES (@RealID, @Name, @Role, @Seniority)";
                 SqlCommand cmd = new SqlCommand(query, conn);
+
+                cmd.Parameters.AddWithValue("@RealID", realId); // הוספנו את הפרמטר הזה
                 cmd.Parameters.AddWithValue("@Name", name);
                 cmd.Parameters.AddWithValue("@Role", role);
+                cmd.Parameters.AddWithValue("@Seniority", seniority);
 
-                try
-                {
-                    conn.Open();
-                    cmd.ExecuteNonQuery();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("שגיאה בשמירה ל-SQL: " + ex.Message);
-                }
+                try { conn.Open(); cmd.ExecuteNonQuery(); }
+                catch (Exception ex) { MessageBox.Show("Error adding employee: " + ex.Message); }
             }
         }
 
-        // פונקציה לקבלת כל העובדים
         public DataTable GetEmployees()
         {
             DataTable dt = new DataTable();
@@ -64,12 +58,103 @@ namespace SafeShiftAI_GUI
                     SqlDataAdapter adapter = new SqlDataAdapter(cmd);
                     adapter.Fill(dt);
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("שגיאה בקריאה מ-SQL: " + ex.Message);
-                }
+                catch (Exception ex) { MessageBox.Show("Error loading employees: " + ex.Message); }
             }
             return dt;
+        }
+
+        // --- ניהול ימי מחלה (חדש!) ---
+        public void AddSickDay(int empId, int day)
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                // מניעת כפילויות
+                string checkQuery = "SELECT COUNT(*) FROM SickDays WHERE EmployeeId = @EmpId AND Day = @Day";
+                SqlCommand checkCmd = new SqlCommand(checkQuery, conn);
+                checkCmd.Parameters.AddWithValue("@EmpId", empId);
+                checkCmd.Parameters.AddWithValue("@Day", day);
+
+                try
+                {
+                    conn.Open();
+                    int exists = (int)checkCmd.ExecuteScalar();
+
+                    if (exists == 0)
+                    {
+                        string query = "INSERT INTO SickDays (EmployeeId, Day) VALUES (@EmpId, @Day)";
+                        SqlCommand cmd = new SqlCommand(query, conn);
+                        cmd.Parameters.AddWithValue("@EmpId", empId);
+                        cmd.Parameters.AddWithValue("@Day", day);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex) { MessageBox.Show("Error adding sick day: " + ex.Message); }
+            }
+        }
+
+        public List<(int EmpId, int Day)> LoadSickDays()
+        {
+            var list = new List<(int, int)>();
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                string query = "SELECT EmployeeId, Day FROM SickDays";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                try
+                {
+                    conn.Open();
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        list.Add(((int)reader["EmployeeId"], (int)reader["Day"]));
+                    }
+                }
+                catch { }
+            }
+            return list;
+        }
+
+        // --- ניהול סינרגיה ---
+        public void SaveSynergy(int id1, int id2, int score)
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                string query = @"
+                    IF EXISTS (SELECT 1 FROM Synergy WHERE EmpId1 = @Id1 AND EmpId2 = @Id2)
+                        UPDATE Synergy SET Score = @Score WHERE EmpId1 = @Id1 AND EmpId2 = @Id2
+                    ELSE
+                        INSERT INTO Synergy (EmpId1, EmpId2, Score) VALUES (@Id1, @Id2, @Score)";
+
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@Id1", id1);
+                cmd.Parameters.AddWithValue("@Id2", id2);
+                cmd.Parameters.AddWithValue("@Score", score);
+
+                try { conn.Open(); cmd.ExecuteNonQuery(); } catch { }
+            }
+        }
+
+        public Dictionary<string, int> LoadSynergyData()
+        {
+            var data = new Dictionary<string, int>();
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                string query = "SELECT * FROM Synergy";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                try
+                {
+                    conn.Open();
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        int id1 = (int)reader["EmpId1"];
+                        int id2 = (int)reader["EmpId2"];
+                        int score = (int)reader["Score"];
+                        data[$"{id1}-{id2}"] = score;
+                    }
+                }
+                catch { }
+            }
+            return data;
         }
     }
 }

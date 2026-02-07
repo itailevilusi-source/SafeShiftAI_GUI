@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shift_Safe_Smart
+namespace SafeShiftAI_GUI
 {
     internal class Chromosome
     {

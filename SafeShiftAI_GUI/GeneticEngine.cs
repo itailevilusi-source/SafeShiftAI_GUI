@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace Shift_Safe_Smart
+namespace SafeShiftAI_GUI
 {
     internal class GeneticEngine
     {
@@ -32,21 +32,9 @@ namespace Shift_Safe_Smart
                     {
                         for (int role = 0; role < 3; role++)
                         {
-                            int num = 0;
-                            if (role == 0)
-                            {
+                            //אנחנו מבקשים מה-Data_Layer
+                            int num = data_layer.GetRandomWorkerID(role);
 
-                                num = random.Next(0, 10); //מנהלים 
-
-                            }
-                            if (role == 1)
-                            {
-                                num = random.Next(10, 20); //רופאים 
-                            }
-                            if (role == 2)
-                            {
-                                num = random.Next(20, 30);//נהגים
-                            }
                             chromosome.Schedule[day, shift, role] = num;
                         }
                     }
@@ -328,55 +316,62 @@ namespace Shift_Safe_Smart
             {
                 for (int shift = 0; shift < 3; shift++)
                 {
-                    // תיקון הכפילות: נציג את המספר רק במשמרת הראשונה (0 = בוקר)
-                    // במשמרות אחרות נשים מחרוזת ריקה ""
                     string dayDisplay = (shift == 0) ? (day + 1).ToString() : "";
+
+                    int mgrId = BestSolution.Schedule[day, shift, 0];
+                    int docId = BestSolution.Schedule[day, shift, 1];
+                    int drvId = BestSolution.Schedule[day, shift, 2];
 
                     uiList.Add(new ShiftDisplayModel
                     {
-                        Day = dayDisplay, // השינוי כאן
+                        Day = dayDisplay,
                         Shift = shiftNames[shift],
-                        ManagerID = BestSolution.Schedule[day, shift, 0],
-                        DoctorID = BestSolution.Schedule[day, shift, 1],
-                        DriverID = BestSolution.Schedule[day, shift, 2]
+
+                        // === כאן השינוי: שימוש ב-GetEmployeeDetails במקום GetName ===
+                        // זה יציג: "Danny (305678912)"
+                        ManagerID = data_layer.GetEmployeeDetails(mgrId),
+                        DoctorID = data_layer.GetEmployeeDetails(docId),
+                        DriverID = data_layer.GetEmployeeDetails(drvId)
+                        // ==============================================================
                     });
                 }
             }
             return uiList;
         }
-        //public void DisplayWeeklySchedule(Chromosome best)
-        //{
-        //    Console.WriteLine("\n=== SafeShift AI: Weekly Schedule Result (First 7 Days) ===");
-        //    Console.WriteLine("------------------------------------------------------------");
-        //    Console.WriteLine("| Day | Shift   | Manager (MGR) | Doctor (MED) | Driver (DRV) |");
-        //    Console.WriteLine("------------------------------------------------------------");
+    
+    //public void DisplayWeeklySchedule(Chromosome best)
+    //{
+    //    Console.WriteLine("\n=== SafeShift AI: Weekly Schedule Result (First 7 Days) ===");
+    //    Console.WriteLine("------------------------------------------------------------");
+    //    Console.WriteLine("| Day | Shift   | Manager (MGR) | Doctor (MED) | Driver (DRV) |");
+    //    Console.WriteLine("------------------------------------------------------------");
 
-        //    string[] shiftNames = { "Morning", "Evening", "Night" };
+    //    string[] shiftNames = { "Morning", "Evening", "Night" };
 
-        //    for (int day = 0; day < 7; day++)
-        //    {
-        //        for (int shift = 0; shift < 3; shift++)
-        //        {
-        //            int mgrId = best.Schedule[day, shift, 0];
-        //            int medId = best.Schedule[day, shift, 1];
-        //            int drvId = best.Schedule[day, shift, 2];
+    //    for (int day = 0; day < 7; day++)
+    //    {
+    //        for (int shift = 0; shift < 3; shift++)
+    //        {
+    //            int mgrId = best.Schedule[day, shift, 0];
+    //            int medId = best.Schedule[day, shift, 1];
+    //            int drvId = best.Schedule[day, shift, 2];
 
-        //            Console.WriteLine($"| {day + 1,-3} | {shiftNames[shift],-7} | ID: {mgrId,-10} | ID: {medId,-10} | ID: {drvId,-10} |");
-        //        }
-        //        Console.WriteLine("------------------------------------------------------------");
-        //    }
-        //}
+    //            Console.WriteLine($"| {day + 1,-3} | {shiftNames[shift],-7} | ID: {mgrId,-10} | ID: {medId,-10} | ID: {drvId,-10} |");
+    //        }
+    //        Console.WriteLine("------------------------------------------------------------");
+    //    }
+    //}
 
 
 
-    }
+}
     // מחלקה שתייצג שורה בטבלה הגרפית
     public class ShiftDisplayModel
     {
         public string Day { get; set; }
         public string Shift { get; set; }
-        public int ManagerID { get; set; }
-        public int DoctorID { get; set; }
-        public int DriverID { get; set; }
+        public string ManagerID { get; set; }
+        public string DoctorID { get; set; }
+        public string DriverID { get; set; }
     }
 }
