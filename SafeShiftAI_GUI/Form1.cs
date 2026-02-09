@@ -206,64 +206,73 @@ namespace SafeShiftAI_GUI
         {
             if (dgvSynergy == null) return;
 
-            // 1. איפוס הטבלה
+            // 1. איפוס ועיצוב בסיסי
             dgvSynergy.DataSource = null;
             dgvSynergy.Rows.Clear();
             dgvSynergy.Columns.Clear();
-            dgvSynergy.AllowUserToAddRows = false; // ביטול שורה ריקה למטה
+            dgvSynergy.AllowUserToAddRows = false;
+
+            // ביטול דחיסת העמודות - זה מה שגורם לבלאגן!
+            dgvSynergy.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+
+            // עיצוב כיוון טקסט (חשוב לעברית)
+            dgvSynergy.RightToLeft = RightToLeft.Yes;
 
             // 2. שליפת נתונים
             DataTable dtEmployees = dbHelper.GetEmployees();
             var synergyDict = dbHelper.LoadSynergyData();
 
-            // 3. הוספת עמודה ראשונה קבועה (שמות העובדים בשורות)
-            dgvSynergy.Columns.Add("MainColumn", "עובד \\ עובד");
+            // 3. הוספת עמודה ראשונה קבועה (שמות העובדים)
+            dgvSynergy.Columns.Add("MainColumn", "עובד");
             dgvSynergy.Columns["MainColumn"].ReadOnly = true;
-            dgvSynergy.Columns["MainColumn"].Frozen = true; // מקפיא את העמודה הראשונה
-            dgvSynergy.Columns["MainColumn"].DefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(240, 240, 240);
+            dgvSynergy.Columns["MainColumn"].Frozen = true; // הקפאת העמודה!
+            dgvSynergy.Columns["MainColumn"].Width = 150;   // רוחב נדיב לשם
+            dgvSynergy.Columns["MainColumn"].DefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(230, 230, 250); // צבע רקע שונה
+            dgvSynergy.Columns["MainColumn"].DefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 9, System.Drawing.FontStyle.Bold);
 
-            // 4. יצירת עמודות עבור כל עובד
+            // 4. יצירת עמודות לכל עובד
             foreach (DataRow row in dtEmployees.Rows)
             {
                 string empName = row["Name"].ToString();
                 int empId = Convert.ToInt32(row["Id"]);
 
-                // שם העמודה יכיל את ה-ID כדי שנוכל לזהות אותו אח"כ
+                // יצירת ראשי תיבות לשם העמודה כדי לחסוך מקום (למשל "Avi Cohen" -> "Avi C.")
+                string shortName = empName;
+                var parts = empName.Split(' ');
+                if (parts.Length > 1) shortName = $"{parts[0]} {parts[1][0]}.";
+
                 string colName = "col_" + empId;
-                dgvSynergy.Columns.Add(colName, empName);
-                dgvSynergy.Columns[colName].Width = 80;
+                dgvSynergy.Columns.Add(colName, shortName);
+
+                // הגדרות עיצוב לעמודות הנתונים
+                dgvSynergy.Columns[colName].Width = 70; // רוחב קבוע ונוח
+                dgvSynergy.Columns[colName].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             }
 
-            // 5. מילוי השורות והנתונים
+            // 5. מילוי השורות
             foreach (DataRow rowA in dtEmployees.Rows)
             {
                 int idA = Convert.ToInt32(rowA["Id"]);
                 string nameA = rowA["Name"].ToString();
 
-                // יצירת שורה חדשה
                 int rowIndex = dgvSynergy.Rows.Add();
-                dgvSynergy.Rows[rowIndex].Cells[0].Value = nameA; // השם בעמודה הראשונה
-                dgvSynergy.Rows[rowIndex].Tag = idA; // שמירת ה-ID של העובד בשורה (נסתר)
+                dgvSynergy.Rows[rowIndex].Cells[0].Value = nameA;
+                dgvSynergy.Rows[rowIndex].Tag = idA;
+                dgvSynergy.Rows[rowIndex].Height = 35; // שורה גבוהה יותר
 
-                // ריצה על העמודות למילוי הציונים
                 for (int i = 0; i < dtEmployees.Rows.Count; i++)
                 {
                     DataRow rowB = dtEmployees.Rows[i];
                     int idB = Convert.ToInt32(rowB["Id"]);
-
-                    // האינדקס בטבלה הוא i + 1 (כי עמודה 0 תפוסה ע"י השמות)
                     int colIndex = i + 1;
 
                     if (idA == idB)
                     {
-                        // אלכסון - אין התאמה לעצמו
-                        dgvSynergy.Rows[rowIndex].Cells[colIndex].Value = "X";
+                        dgvSynergy.Rows[rowIndex].Cells[colIndex].Style.BackColor = System.Drawing.Color.Gray;
                         dgvSynergy.Rows[rowIndex].Cells[colIndex].ReadOnly = true;
-                        dgvSynergy.Rows[rowIndex].Cells[colIndex].Style.BackColor = System.Drawing.Color.LightGray;
                     }
                     else
                     {
-                        // חיפוש הציון במילון
                         string key1 = $"{idA}-{idB}";
                         string key2 = $"{idB}-{idA}";
                         int score = 0;
@@ -271,7 +280,10 @@ namespace SafeShiftAI_GUI
                         if (synergyDict.ContainsKey(key1)) score = synergyDict[key1];
                         else if (synergyDict.ContainsKey(key2)) score = synergyDict[key2];
 
+                        // צביעת תאים לפי הציון (ויזואליזציה יפה!)
                         dgvSynergy.Rows[rowIndex].Cells[colIndex].Value = score;
+                        if (score > 0) dgvSynergy.Rows[rowIndex].Cells[colIndex].Style.BackColor = System.Drawing.Color.FromArgb(200, 255, 200); // ירוק בהיר
+                        if (score < 0) dgvSynergy.Rows[rowIndex].Cells[colIndex].Style.BackColor = System.Drawing.Color.FromArgb(255, 200, 200); // אדום בהיר
                     }
                 }
             }
@@ -300,28 +312,55 @@ namespace SafeShiftAI_GUI
 
         private void ApplyModernDesign()
         {
-            // 1. עיצוב כללי לטופס
-            this.BackColor = System.Drawing.Color.FromArgb(240, 243, 249);
+            // 1. הגדרת גודל חלון התחלתי גדול
+            // === שינוי: במקום מסך מלא, גודל קבוע ונוח ===
+            this.WindowState = FormWindowState.Normal; // מצב רגיל (לא מקסימלי)
+            this.Size = new System.Drawing.Size(1280, 800); // גודל רחב אבל לא תופס את כל המסך
+            this.StartPosition = FormStartPosition.CenterScreen; // ייפתח באמצע המסך
+            this.FormBorderStyle = FormBorderStyle.Sizable; // מאפשר לך להגדיל/להקטין ידנית אם תרצה
+
+            this.BackColor = System.Drawing.Color.FromArgb(245, 247, 250);
             this.Font = new System.Drawing.Font("Segoe UI", 10, System.Drawing.FontStyle.Regular);
-            this.StartPosition = FormStartPosition.CenterScreen;
 
             // 2. עיצוב כפתורים
             StyleButton(btnAddEmployee);
             StyleButton(btnSaveSickDays);
             StyleButton(btnRunAlgorithm);
 
-            // חיפוש כפתור הסינרגיה בצורה בטוחה
             Control[] matches = this.Controls.Find("btnSaveSynergy", true);
             if (matches.Length > 0 && matches[0] is Button) StyleButton((Button)matches[0]);
 
             // 3. עיצוב טבלאות
             StyleGrid(dgvSchedule);
-            StyleGrid(dgvSynergy);
+            StyleGrid(dgvSynergy); // הטבלה הזו קיבלה טיפול מיוחד ב-LoadSynergyToGrid
             if (dgvEmployees != null) StyleGrid(dgvEmployees);
 
-            // 4. עיצוב כותרות ותוויות
-            // התיקון: אנחנו מעצבים את ה-Label שיצרת בשלב 2
-            StyleLabel(lblStatus, true);
+            // 4. עיצוב תווית סטטוס
+            if (lblStatus != null)
+            {
+                lblStatus.ForeColor = System.Drawing.Color.FromArgb(51, 102, 255);
+                lblStatus.Font = new System.Drawing.Font("Segoe UI", 14, System.Drawing.FontStyle.Bold);
+            }
+
+            // 5. שיפור עיצוב הגרף (Spline = קו מעוגל)
+            if (chartFitness != null)
+            {
+                chartFitness.BackColor = System.Drawing.Color.White;
+                chartFitness.ChartAreas[0].BackColor = System.Drawing.Color.White;
+
+                // ביטול קווי רשת צפופים
+                chartFitness.ChartAreas[0].AxisX.MajorGrid.LineColor = System.Drawing.Color.LightGray;
+                chartFitness.ChartAreas[0].AxisY.MajorGrid.LineColor = System.Drawing.Color.LightGray;
+                chartFitness.ChartAreas[0].AxisX.MajorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dash;
+                chartFitness.ChartAreas[0].AxisY.MajorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dash;
+
+                if (chartFitness.Series.Count > 0)
+                {
+                    chartFitness.Series[0].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline; // קו מעוגל ויפה
+                    chartFitness.Series[0].BorderWidth = 4;
+                    chartFitness.Series[0].Color = System.Drawing.Color.FromArgb(51, 102, 255);
+                }
+            }
         }
 
         // פונקציית עזר לעיצוב כפתור
@@ -429,12 +468,46 @@ namespace SafeShiftAI_GUI
             MessageBox.Show("הנתונים נשמרו בהצלחה!");
         }
 
+        private void cmbSickEmployee_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // הגנה מפני קריסה כשהטופס רק עולה
+            if (cmbSickEmployee.SelectedValue == null) return;
+
+            // ניסיון להמיר את הערך ל-ID
+            if (int.TryParse(cmbSickEmployee.SelectedValue.ToString(), out int empId))
+            {
+                // 1. איפוס כל ה-V הקיימים
+                for (int i = 0; i < clbSickDays.Items.Count; i++)
+                {
+                    clbSickDays.SetItemChecked(i, false);
+                }
+
+                // 2. הבאת הימים מה-SQL
+                List<int> sickDays = dbHelper.GetSickDaysForEmployee(empId);
+
+                // 3. סימון ה-V במקומות הנכונים
+                foreach (int day in sickDays)
+                {
+                    // בדיקת גבולות (למנוע קריסה אם היום הוא 30 והמערך קצר יותר)
+                    if (day >= 0 && day < clbSickDays.Items.Count)
+                    {
+                        clbSickDays.SetItemChecked(day, true);
+                    }
+                }
+            }
+        }
+
         private void lblStatus_Click(object sender, EventArgs e)
         {
 
         }
 
         private void tabPage2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void tabPage1_Click(object sender, EventArgs e)
         {
 
         }

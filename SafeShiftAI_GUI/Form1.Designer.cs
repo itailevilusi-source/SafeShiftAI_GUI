@@ -28,10 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea5 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend5 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.lblStatus = new System.Windows.Forms.Label();
             this.lblFitness = new System.Windows.Forms.Label();
             this.chartFitness = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.pbStatus = new System.Windows.Forms.ProgressBar();
@@ -55,9 +56,8 @@
             this.label2 = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.dgvSynergy = new System.Windows.Forms.DataGridView();
             this.btnSaveSynergy = new System.Windows.Forms.Button();
-            this.lblStatus = new System.Windows.Forms.Label();
+            this.dgvSynergy = new System.Windows.Forms.DataGridView();
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartFitness)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSchedule)).BeginInit();
@@ -82,11 +82,20 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 25);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(1393, 632);
+            this.tabPage2.Size = new System.Drawing.Size(1644, 632);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "תוצאות ושיבוץ";
             this.tabPage2.UseVisualStyleBackColor = true;
             this.tabPage2.Click += new System.EventHandler(this.tabPage2_Click);
+            // 
+            // lblStatus
+            // 
+            this.lblStatus.AutoSize = true;
+            this.lblStatus.Location = new System.Drawing.Point(754, 28);
+            this.lblStatus.Name = "lblStatus";
+            this.lblStatus.Size = new System.Drawing.Size(0, 16);
+            this.lblStatus.TabIndex = 11;
+            this.lblStatus.Click += new System.EventHandler(this.lblStatus_Click);
             // 
             // lblFitness
             // 
@@ -99,17 +108,17 @@
             // 
             // chartFitness
             // 
-            chartArea5.Name = "ChartArea1";
-            this.chartFitness.ChartAreas.Add(chartArea5);
-            legend5.Name = "Legend1";
-            this.chartFitness.Legends.Add(legend5);
+            chartArea2.Name = "ChartArea1";
+            this.chartFitness.ChartAreas.Add(chartArea2);
+            legend2.Name = "Legend1";
+            this.chartFitness.Legends.Add(legend2);
             this.chartFitness.Location = new System.Drawing.Point(977, 103);
             this.chartFitness.Name = "chartFitness";
-            series5.ChartArea = "ChartArea1";
-            series5.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
-            series5.Legend = "Legend1";
-            series5.Name = "Series1";
-            this.chartFitness.Series.Add(series5);
+            series2.ChartArea = "ChartArea1";
+            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
+            series2.Legend = "Legend1";
+            series2.Name = "Series1";
+            this.chartFitness.Series.Add(series2);
             this.chartFitness.Size = new System.Drawing.Size(413, 517);
             this.chartFitness.TabIndex = 9;
             this.chartFitness.Text = "chart1";
@@ -167,17 +176,18 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 25);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(1393, 632);
+            this.tabPage1.Size = new System.Drawing.Size(1644, 883);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "ניהול עובדים";
             this.tabPage1.UseVisualStyleBackColor = true;
+            this.tabPage1.Click += new System.EventHandler(this.tabPage1_Click);
             // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.btnSaveSickDays);
             this.groupBox1.Controls.Add(this.clbSickDays);
             this.groupBox1.Controls.Add(this.cmbSickEmployee);
-            this.groupBox1.Location = new System.Drawing.Point(563, 28);
+            this.groupBox1.Location = new System.Drawing.Point(476, 31);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(308, 547);
             this.groupBox1.TabIndex = 10;
@@ -210,6 +220,7 @@
             this.cmbSickEmployee.Name = "cmbSickEmployee";
             this.cmbSickEmployee.Size = new System.Drawing.Size(249, 24);
             this.cmbSickEmployee.TabIndex = 0;
+            this.cmbSickEmployee.SelectedIndexChanged += new System.EventHandler(this.cmbSickEmployee_SelectedIndexChanged);
             // 
             // txtRealID
             // 
@@ -247,11 +258,11 @@
             // dgvEmployees
             // 
             this.dgvEmployees.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvEmployees.Location = new System.Drawing.Point(948, 79);
+            this.dgvEmployees.Location = new System.Drawing.Point(790, 21);
             this.dgvEmployees.Name = "dgvEmployees";
             this.dgvEmployees.RowHeadersWidth = 51;
             this.dgvEmployees.RowTemplate.Height = 24;
-            this.dgvEmployees.Size = new System.Drawing.Size(396, 523);
+            this.dgvEmployees.Size = new System.Drawing.Size(848, 697);
             this.dgvEmployees.TabIndex = 5;
             // 
             // btnAddEmployee
@@ -305,12 +316,12 @@
             // tabControl1
             // 
             this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Controls.Add(this.tabPage3);
+            this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Location = new System.Drawing.Point(0, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(1401, 661);
+            this.tabControl1.Size = new System.Drawing.Size(1652, 912);
             this.tabControl1.TabIndex = 5;
             // 
             // tabPage3
@@ -320,46 +331,38 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 25);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(1393, 632);
+            this.tabPage3.Size = new System.Drawing.Size(1644, 883);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "מטריצת התאמה";
             this.tabPage3.UseVisualStyleBackColor = true;
             this.tabPage3.Click += new System.EventHandler(this.tabPage3_Click);
             // 
-            // dgvSynergy
-            // 
-            this.dgvSynergy.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvSynergy.Location = new System.Drawing.Point(141, 6);
-            this.dgvSynergy.Name = "dgvSynergy";
-            this.dgvSynergy.RowTemplate.Height = 24;
-            this.dgvSynergy.Size = new System.Drawing.Size(1045, 427);
-            this.dgvSynergy.TabIndex = 0;
-            this.dgvSynergy.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvSynergy_CellContentClick);
-            // 
             // btnSaveSynergy
             // 
-            this.btnSaveSynergy.Location = new System.Drawing.Point(467, 469);
+            this.btnSaveSynergy.Location = new System.Drawing.Point(397, 729);
             this.btnSaveSynergy.Name = "btnSaveSynergy";
-            this.btnSaveSynergy.Size = new System.Drawing.Size(376, 51);
+            this.btnSaveSynergy.Size = new System.Drawing.Size(662, 51);
             this.btnSaveSynergy.TabIndex = 2;
             this.btnSaveSynergy.Text = "שמור נתוני התאמה";
             this.btnSaveSynergy.UseVisualStyleBackColor = true;
             this.btnSaveSynergy.Click += new System.EventHandler(this.btnSaveSynergy_Click);
             // 
-            // lblStatus
+            // dgvSynergy
             // 
-            this.lblStatus.AutoSize = true;
-            this.lblStatus.Location = new System.Drawing.Point(754, 28);
-            this.lblStatus.Name = "lblStatus";
-            this.lblStatus.Size = new System.Drawing.Size(0, 16);
-            this.lblStatus.TabIndex = 11;
-            this.lblStatus.Click += new System.EventHandler(this.lblStatus_Click);
+            this.dgvSynergy.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvSynergy.Location = new System.Drawing.Point(-188, 3);
+            this.dgvSynergy.Name = "dgvSynergy";
+            this.dgvSynergy.RowHeadersWidth = 51;
+            this.dgvSynergy.RowTemplate.Height = 24;
+            this.dgvSynergy.Size = new System.Drawing.Size(1826, 706);
+            this.dgvSynergy.TabIndex = 0;
+            this.dgvSynergy.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvSynergy_CellContentClick);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1400, 674);
+            this.ClientSize = new System.Drawing.Size(1648, 907);
             this.Controls.Add(this.tabControl1);
             this.Name = "Form1";
             this.Text = "Form1";

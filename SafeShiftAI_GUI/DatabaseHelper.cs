@@ -156,5 +156,30 @@ namespace SafeShiftAI_GUI
             }
             return data;
         }
+
+        public List<int> GetSickDaysForEmployee(int empId)
+        {
+            List<int> days = new List<int>();
+
+            // שימוש באותו חיבור שיש לך במחלקה (נניח שקוראים לו connectionString)
+            // אם השם אצלך שונה, שנה בהתאם
+            using (System.Data.SqlClient.SqlConnection conn = new System.Data.SqlClient.SqlConnection("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\\SafeShiftDB.mdf;Integrated Security=True"))
+            {
+                conn.Open();
+                string query = "SELECT Day FROM SickDays WHERE EmployeeId = @id";
+                using (System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@id", empId);
+                    using (System.Data.SqlClient.SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            days.Add((int)reader["Day"]);
+                        }
+                    }
+                }
+            }
+            return days;
+        }
     }
 }
