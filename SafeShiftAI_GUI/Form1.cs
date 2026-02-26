@@ -83,6 +83,8 @@ namespace SafeShiftAI_GUI
             txtRealID.Clear();
             txtSeniority.Value = 0;
             LoadEmployeesList(); // חשוב: מרענן גם את הרשימה בניהול ימי מחלה
+          //  רענון גם של המטריצה כדי שהעובד החדש יופיע 
+            LoadSynergyToGrid();
         }
 
         // --- כפתור 2: שמירת ימי מחלה ---
@@ -511,5 +513,51 @@ namespace SafeShiftAI_GUI
         {
 
         }
+
+
+        private void btnDeleteEmployee_Click(object sender, EventArgs e)
+        {
+            // בדיקה האם המשתמש באמת בחר שורה בטבלת העובדים
+            if (dgvEmployees.SelectedRows.Count > 0)
+            {
+                // שליפת ה-ID של העובד מהשורה שנבחרה
+                int selectedEmpId = Convert.ToInt32(dgvEmployees.SelectedRows[0].Cells["Id"].Value);
+                string empName = dgvEmployees.SelectedRows[0].Cells["Name"].Value.ToString();
+
+                // הקפצת הודעת אזהרה (חשוב מאוד במחיקות!)
+                DialogResult dialogResult = MessageBox.Show(
+                    $"האם אתה בטוח שברצונך למחוק את העובד '{empName}'?\nפעולה זו תמחק גם את ימי המחלה ונתוני ההתאמה שלו.",
+                    "אישור מחיקה",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning);
+
+                if (dialogResult == DialogResult.Yes)
+                {
+                    try
+                    {
+                        // קריאה לפונקציית המחיקה
+                        dbHelper.DeleteEmployee(selectedEmpId);
+
+                        // רענון טבלת העובדים במסך
+                        LoadEmployeesList();
+                        
+
+                        // רענון מטריצת ההתאמה (כדי שהעובד ייעלם גם משם)
+                        LoadSynergyToGrid();
+
+                        MessageBox.Show("העובד נמחק בהצלחה!", "נמחק", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("שגיאה במחיקת העובד: " + ex.Message);
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("נא לבחור עובד מהטבלה כדי למחוק אותו.", "שגיאה", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+    
     }
 }

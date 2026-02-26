@@ -181,5 +181,40 @@ namespace SafeShiftAI_GUI
             }
             return days;
         }
+
+
+        //"כדי למחוק עובד, לא יכולתי למחוק אותו ישירות מטבלת העובדים בגלל אילוצי Foreign Key של מסד הנתונים. לכן, הפונקציה שלי קודם כל מוחקת את ימי המחלה שלו מ-SickDays, לאחר מכן מוחקת את כל קשרי ההתאמה שלו מ-Synergy, ורק כשהוא מנותק משאר המערכת, היא מוחקת אותו סופית מ-Employees."
+        public void DeleteEmployee(int empId)
+        {
+            using (System.Data.SqlClient.SqlConnection conn = new System.Data.SqlClient.SqlConnection("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\\SafeShiftDB.mdf;Integrated Security=True"))
+            {
+                conn.Open();
+
+                // 1. מחיקת העובד ממטריצת ההתאמה (גם כשהוא עובד 1 וגם כשהוא עובד 2)
+                string querySynergy = "DELETE FROM Synergy WHERE EmpId1 = @id OR EmpId2 = @id";
+                using (System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand(querySynergy, conn))
+                {
+                    cmd.Parameters.AddWithValue("@id", empId);
+                    cmd.ExecuteNonQuery();
+                }
+
+                // 2. מחיקת ימי המחלה של העובד
+                string querySickDays = "DELETE FROM SickDays WHERE EmployeeId = @id";
+                using (System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand(querySickDays, conn))
+                {
+                    cmd.Parameters.AddWithValue("@id", empId);
+                    cmd.ExecuteNonQuery();
+                }
+
+                // 3. מחיקת העובד עצמו מטבלת העובדים
+                string queryEmployee = "DELETE FROM Employees WHERE Id = @id";
+                using (System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand(queryEmployee, conn))
+                {
+                    cmd.Parameters.AddWithValue("@id", empId);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
     }
 }

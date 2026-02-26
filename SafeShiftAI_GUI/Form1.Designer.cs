@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.lblStatus = new System.Windows.Forms.Label();
             this.lblFitness = new System.Windows.Forms.Label();
@@ -58,6 +58,7 @@
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.btnSaveSynergy = new System.Windows.Forms.Button();
             this.dgvSynergy = new System.Windows.Forms.DataGridView();
+            this.btnDeleteEmployee = new System.Windows.Forms.Button();
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartFitness)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSchedule)).BeginInit();
@@ -82,7 +83,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 25);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(1644, 632);
+            this.tabPage2.Size = new System.Drawing.Size(1338, 883);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "תוצאות ושיבוץ";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -108,17 +109,17 @@
             // 
             // chartFitness
             // 
-            chartArea2.Name = "ChartArea1";
-            this.chartFitness.ChartAreas.Add(chartArea2);
-            legend2.Name = "Legend1";
-            this.chartFitness.Legends.Add(legend2);
+            chartArea1.Name = "ChartArea1";
+            this.chartFitness.ChartAreas.Add(chartArea1);
+            legend1.Name = "Legend1";
+            this.chartFitness.Legends.Add(legend1);
             this.chartFitness.Location = new System.Drawing.Point(977, 103);
             this.chartFitness.Name = "chartFitness";
-            series2.ChartArea = "ChartArea1";
-            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
-            series2.Legend = "Legend1";
-            series2.Name = "Series1";
-            this.chartFitness.Series.Add(series2);
+            series1.ChartArea = "ChartArea1";
+            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
+            series1.Legend = "Legend1";
+            series1.Name = "Series1";
+            this.chartFitness.Series.Add(series1);
             this.chartFitness.Size = new System.Drawing.Size(413, 517);
             this.chartFitness.TabIndex = 9;
             this.chartFitness.Text = "chart1";
@@ -162,6 +163,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.btnDeleteEmployee);
             this.tabPage1.Controls.Add(this.groupBox1);
             this.tabPage1.Controls.Add(this.txtRealID);
             this.tabPage1.Controls.Add(this.label5);
@@ -176,7 +178,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 25);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(1644, 883);
+            this.tabPage1.Size = new System.Drawing.Size(1509, 883);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "ניהול עובדים";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -258,11 +260,11 @@
             // dgvEmployees
             // 
             this.dgvEmployees.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvEmployees.Location = new System.Drawing.Point(790, 21);
+            this.dgvEmployees.Location = new System.Drawing.Point(785, 52);
             this.dgvEmployees.Name = "dgvEmployees";
             this.dgvEmployees.RowHeadersWidth = 51;
             this.dgvEmployees.RowTemplate.Height = 24;
-            this.dgvEmployees.Size = new System.Drawing.Size(848, 697);
+            this.dgvEmployees.Size = new System.Drawing.Size(588, 697);
             this.dgvEmployees.TabIndex = 5;
             // 
             // btnAddEmployee
@@ -321,7 +323,7 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(1652, 912);
+            this.tabControl1.Size = new System.Drawing.Size(1517, 912);
             this.tabControl1.TabIndex = 5;
             // 
             // tabPage3
@@ -331,7 +333,7 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 25);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(1644, 883);
+            this.tabPage3.Size = new System.Drawing.Size(1338, 883);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "מטריצת התאמה";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -350,19 +352,30 @@
             // dgvSynergy
             // 
             this.dgvSynergy.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvSynergy.Location = new System.Drawing.Point(-188, 3);
+            this.dgvSynergy.Location = new System.Drawing.Point(6, 6);
             this.dgvSynergy.Name = "dgvSynergy";
             this.dgvSynergy.RowHeadersWidth = 51;
             this.dgvSynergy.RowTemplate.Height = 24;
-            this.dgvSynergy.Size = new System.Drawing.Size(1826, 706);
+            this.dgvSynergy.Size = new System.Drawing.Size(1338, 717);
             this.dgvSynergy.TabIndex = 0;
             this.dgvSynergy.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvSynergy_CellContentClick);
+            // 
+            // btnDeleteEmployee
+            // 
+            this.btnDeleteEmployee.BackColor = System.Drawing.Color.IndianRed;
+            this.btnDeleteEmployee.Location = new System.Drawing.Point(110, 570);
+            this.btnDeleteEmployee.Name = "btnDeleteEmployee";
+            this.btnDeleteEmployee.Size = new System.Drawing.Size(302, 87);
+            this.btnDeleteEmployee.TabIndex = 11;
+            this.btnDeleteEmployee.Text = "מחק עובד נבחר";
+            this.btnDeleteEmployee.UseVisualStyleBackColor = false;
+            this.btnDeleteEmployee.Click += new System.EventHandler(this.btnDeleteEmployee_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1648, 907);
+            this.ClientSize = new System.Drawing.Size(1622, 907);
             this.Controls.Add(this.tabControl1);
             this.Name = "Form1";
             this.Text = "Form1";
@@ -411,6 +424,7 @@
         private System.Windows.Forms.Button btnSaveSickDays;
         private System.Windows.Forms.Button btnSaveSynergy;
         private System.Windows.Forms.Label lblStatus;
+        private System.Windows.Forms.Button btnDeleteEmployee;
     }
 }
 
