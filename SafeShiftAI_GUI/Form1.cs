@@ -558,6 +558,105 @@ namespace SafeShiftAI_GUI
                 MessageBox.Show("נא לבחור עובד מהטבלה כדי למחוק אותו.", "שגיאה", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-    
+
+        private async void btnRunBacktracking_Click(object sender, EventArgs e)
+        {
+            btnRunBacktracking.Enabled = false;
+            lblStatusBacktracking.Text = "מריץ אלגוריתם נאיבי... נא להמתין (זה ייקח כמה שניות)";
+            lblStatusBacktracking.ForeColor = System.Drawing.Color.Orange;
+            dgvBacktrackingSchedule.DataSource = null; // ניקוי הטבלה
+
+            try
+            {
+                // 1. טעינת הנתונים (משתמשים במחלקה הקיימת שלך!)
+                Data_Layer currentData = new Data_Layer();
+                if (currentData.Employees.Count == 0) throw new Exception("אין עובדים במערכת!");
+
+                // 2. יצירת הפותר שלנו
+                BacktrackingSolver solver = new BacktrackingSolver(currentData);
+
+                // 3. הרצה ברקע
+                bool success = await Task.Run(() => solver.Solve());
+
+                // 4. הצגת התוצאות (עם פסיק למספרים גדולים)
+                if (success)
+                {
+                    lblStatusBacktracking.Text = $"הצליח! (נדיר מאוד). איטרציות: {solver.IterationsCount:N0}";
+                    lblStatusBacktracking.ForeColor = System.Drawing.Color.Green;
+                }
+                else
+                {
+                    lblStatusBacktracking.Text = $"האלגוריתם נתקע ונעצר! הגיע עד יום: {solver.MaxDayReached + 1} | איטרציות: {solver.IterationsCount:N0}";
+                    lblStatusBacktracking.ForeColor = System.Drawing.Color.Red;
+                }
+
+                // 5. המרת המערך לטבלה
+                int[,,] bestMatrix = solver.GetBestPartialSchedule();
+                DisplayBacktrackingMatrix(bestMatrix, currentData.Employees);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("שגיאה: " + ex.Message);
+            }
+            finally
+            {
+                btnRunBacktracking.Enabled = true;
+            }
+        }
+
+        // פונקציית עזר להצגת הטבלה (שים אותה מתחת לכפתור ב-Form1)
+        private void DisplayBacktrackingMatrix(int[,,] matrix, List<Employee> employees)
+        {
+            List<ShiftDisplayModel> listForGrid = new List<ShiftDisplayModel>();
+            string[] shiftNames = { "Morning", "Evening", "Night" };
+
+            for (int day = 0; day < 30; day++)
+            {
+                for (int shift = 0; shift < 3; shift++)
+                {
+                    ShiftDisplayModel row = new ShiftDisplayModel();
+
+                    // התיקון הראשון: הוספת .ToString()
+                    row.Day = (day + 1).ToString();
+                    row.Shift = shiftNames[shift];
+
+                    // התיקון השני: שימוש בשמות המאפיינים הנכונים (ID במקום Name)
+
+                    // תפקיד 0 (מנהל/MGR)
+                    int mgrId = matrix[day, shift, 0];
+                    row.ManagerID = mgrId != -1 ? employees.FirstOrDefault(e => e.ID == mgrId)?.Name ?? "ריק" : "ריק";
+
+                    // תפקיד 1 (רופא/MED)
+                    int medId = matrix[day, shift, 1];
+                    row.DoctorID = medId != -1 ? employees.FirstOrDefault(e => e.ID == medId)?.Name ?? "ריק" : "ריק";
+
+                    // תפקיד 2 (נהג/DRV)
+                    int drvId = matrix[day, shift, 2];
+                    row.DriverID = drvId != -1 ? employees.FirstOrDefault(e => e.ID == drvId)?.Name ?? "ריק" : "ריק";
+
+                    listForGrid.Add(row);
+                }
+            }
+
+            dgvBacktrackingSchedule.DataSource = listForGrid;
+
+            // עיצוב כותרות הטבלה החדשה (עדכנתי גם פה את השמות ל-ID)
+            if (dgvBacktrackingSchedule.Columns.Count > 0)
+            {
+                if (dgvBacktrackingSchedule.Columns.Contains("Day")) dgvBacktrackingSchedule.Columns["Day"].HeaderText = "יום";
+                if (dgvBacktrackingSchedule.Columns.Contains("Shift")) dgvBacktrackingSchedule.Columns["Shift"].HeaderText = "משמרת";
+                if (dgvBacktrackingSchedule.Columns.Contains("ManagerID")) dgvBacktrackingSchedule.Columns["ManagerID"].HeaderText = "מנהל";
+                if (dgvBacktrackingSchedule.Columns.Contains("DoctorID")) dgvBacktrackingSchedule.Columns["DoctorID"].HeaderText = "רופא";
+                if (dgvBacktrackingSchedule.Columns.Contains("DriverID")) dgvBacktrackingSchedule.Columns["DriverID"].HeaderText = "נהג";
+
+                // בונוס: הפעלת פונקציית העיצוב (תוריד את ה-// אם יש לך שגיאה פה)
+                StyleGrid(dgvBacktrackingSchedule);
+            }
+        }
+
+        private void tabPage4_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

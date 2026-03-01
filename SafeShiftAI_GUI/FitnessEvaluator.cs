@@ -160,6 +160,42 @@ namespace SafeShiftAI_GUI
                     }
                 }
             }
+            // =========================================================
+            // אילוץ עומס חודשי: מקסימום 9 משמרות בחודש לעובד (כמו ב-Backtracking)
+            // =========================================================
+
+            //  ניצור מילון שיספור כמה משמרות כל עובד קיבל בלוח הנוכחי
+            Dictionary<int, int> monthlyShiftCount = new Dictionary<int, int>();
+            for (int d = 0; d < 30; d++)
+            {
+                for (int s = 0; s < 3; s++)
+                {
+                    for (int r = 0; r < 3; r++)
+                    {
+                        int empId = chromosome[d, s, r];
+                        if (empId != 0) // אם יש פה עובד 
+                        {
+                            if (!monthlyShiftCount.ContainsKey(empId))
+                            {
+                                monthlyShiftCount[empId] = 0;
+                            }
+                            monthlyShiftCount[empId]++;
+                        }
+                    }
+                }
+            }
+
+            // 2. נעבור על כל העובדים, ומי שעבר 9 משמרות יחטוף קנס קשה!
+            foreach (var kvp in monthlyShiftCount)
+            {
+                int shifts = kvp.Value;
+                if (shifts > 9)
+                {
+                    // קנס של 10,000 נקודות על כל משמרת נוספת מעל 9
+                    score -= (shifts - 9) * 10000;
+                }
+            }
+            // =========================================================
 
             return score;
             // return Math.Max(0, score); //   לא מחזירים ציון שלילי,פתרון שהוא 0 נחשב לזבל והוא לא ימשיך באלגוריתם הגנטי

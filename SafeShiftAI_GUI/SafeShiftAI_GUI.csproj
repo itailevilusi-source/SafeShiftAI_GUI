@@ -62,6 +62,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BacktrackingSolver.cs" />
     <Compile Include="Chromosome.cs" />
     <Compile Include="DatabaseHelper.cs" />
     <Compile Include="Data_Layer.cs" />

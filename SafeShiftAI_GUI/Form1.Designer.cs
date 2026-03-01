@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend4 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.lblStatus = new System.Windows.Forms.Label();
             this.lblFitness = new System.Windows.Forms.Label();
@@ -40,6 +40,7 @@
             this.dgvSchedule = new System.Windows.Forms.DataGridView();
             this.btnRunAlgorithm = new System.Windows.Forms.Button();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.btnDeleteEmployee = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.btnSaveSickDays = new System.Windows.Forms.Button();
             this.clbSickDays = new System.Windows.Forms.CheckedListBox();
@@ -58,7 +59,10 @@
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.btnSaveSynergy = new System.Windows.Forms.Button();
             this.dgvSynergy = new System.Windows.Forms.DataGridView();
-            this.btnDeleteEmployee = new System.Windows.Forms.Button();
+            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.btnRunBacktracking = new System.Windows.Forms.Button();
+            this.lblStatusBacktracking = new System.Windows.Forms.Label();
+            this.dgvBacktrackingSchedule = new System.Windows.Forms.DataGridView();
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartFitness)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSchedule)).BeginInit();
@@ -69,6 +73,8 @@
             this.tabControl1.SuspendLayout();
             this.tabPage3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSynergy)).BeginInit();
+            this.tabPage4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvBacktrackingSchedule)).BeginInit();
             this.SuspendLayout();
             // 
             // tabPage2
@@ -83,7 +89,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 25);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(1338, 883);
+            this.tabPage2.Size = new System.Drawing.Size(1509, 883);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "תוצאות ושיבוץ";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -109,17 +115,17 @@
             // 
             // chartFitness
             // 
-            chartArea1.Name = "ChartArea1";
-            this.chartFitness.ChartAreas.Add(chartArea1);
-            legend1.Name = "Legend1";
-            this.chartFitness.Legends.Add(legend1);
+            chartArea4.Name = "ChartArea1";
+            this.chartFitness.ChartAreas.Add(chartArea4);
+            legend4.Name = "Legend1";
+            this.chartFitness.Legends.Add(legend4);
             this.chartFitness.Location = new System.Drawing.Point(977, 103);
             this.chartFitness.Name = "chartFitness";
-            series1.ChartArea = "ChartArea1";
-            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
-            series1.Legend = "Legend1";
-            series1.Name = "Series1";
-            this.chartFitness.Series.Add(series1);
+            series4.ChartArea = "ChartArea1";
+            series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
+            series4.Legend = "Legend1";
+            series4.Name = "Series1";
+            this.chartFitness.Series.Add(series4);
             this.chartFitness.Size = new System.Drawing.Size(413, 517);
             this.chartFitness.TabIndex = 9;
             this.chartFitness.Text = "chart1";
@@ -183,6 +189,17 @@
             this.tabPage1.Text = "ניהול עובדים";
             this.tabPage1.UseVisualStyleBackColor = true;
             this.tabPage1.Click += new System.EventHandler(this.tabPage1_Click);
+            // 
+            // btnDeleteEmployee
+            // 
+            this.btnDeleteEmployee.BackColor = System.Drawing.Color.IndianRed;
+            this.btnDeleteEmployee.Location = new System.Drawing.Point(110, 570);
+            this.btnDeleteEmployee.Name = "btnDeleteEmployee";
+            this.btnDeleteEmployee.Size = new System.Drawing.Size(302, 87);
+            this.btnDeleteEmployee.TabIndex = 11;
+            this.btnDeleteEmployee.Text = "מחק עובד נבחר";
+            this.btnDeleteEmployee.UseVisualStyleBackColor = false;
+            this.btnDeleteEmployee.Click += new System.EventHandler(this.btnDeleteEmployee_Click);
             // 
             // groupBox1
             // 
@@ -320,6 +337,7 @@
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Controls.Add(this.tabPage4);
             this.tabControl1.Location = new System.Drawing.Point(0, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
@@ -333,7 +351,7 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 25);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(1338, 883);
+            this.tabPage3.Size = new System.Drawing.Size(1509, 883);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "מטריצת התאמה";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -360,16 +378,47 @@
             this.dgvSynergy.TabIndex = 0;
             this.dgvSynergy.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvSynergy_CellContentClick);
             // 
-            // btnDeleteEmployee
+            // tabPage4
             // 
-            this.btnDeleteEmployee.BackColor = System.Drawing.Color.IndianRed;
-            this.btnDeleteEmployee.Location = new System.Drawing.Point(110, 570);
-            this.btnDeleteEmployee.Name = "btnDeleteEmployee";
-            this.btnDeleteEmployee.Size = new System.Drawing.Size(302, 87);
-            this.btnDeleteEmployee.TabIndex = 11;
-            this.btnDeleteEmployee.Text = "מחק עובד נבחר";
-            this.btnDeleteEmployee.UseVisualStyleBackColor = false;
-            this.btnDeleteEmployee.Click += new System.EventHandler(this.btnDeleteEmployee_Click);
+            this.tabPage4.Controls.Add(this.dgvBacktrackingSchedule);
+            this.tabPage4.Controls.Add(this.lblStatusBacktracking);
+            this.tabPage4.Controls.Add(this.btnRunBacktracking);
+            this.tabPage4.Location = new System.Drawing.Point(4, 25);
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Size = new System.Drawing.Size(1509, 883);
+            this.tabPage4.TabIndex = 3;
+            this.tabPage4.Text = "השוואת Backtracking";
+            this.tabPage4.UseVisualStyleBackColor = true;
+            this.tabPage4.Click += new System.EventHandler(this.tabPage4_Click);
+            // 
+            // btnRunBacktracking
+            // 
+            this.btnRunBacktracking.Location = new System.Drawing.Point(194, 211);
+            this.btnRunBacktracking.Name = "btnRunBacktracking";
+            this.btnRunBacktracking.Size = new System.Drawing.Size(364, 142);
+            this.btnRunBacktracking.TabIndex = 0;
+            this.btnRunBacktracking.Text = "החל הרצה";
+            this.btnRunBacktracking.UseVisualStyleBackColor = true;
+            this.btnRunBacktracking.Click += new System.EventHandler(this.btnRunBacktracking_Click);
+            // 
+            // lblStatusBacktracking
+            // 
+            this.lblStatusBacktracking.AutoSize = true;
+            this.lblStatusBacktracking.Location = new System.Drawing.Point(319, 117);
+            this.lblStatusBacktracking.Name = "lblStatusBacktracking";
+            this.lblStatusBacktracking.Size = new System.Drawing.Size(73, 16);
+            this.lblStatusBacktracking.TabIndex = 1;
+            this.lblStatusBacktracking.Text = "מוכן להרצה";
+            // 
+            // dgvBacktrackingSchedule
+            // 
+            this.dgvBacktrackingSchedule.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvBacktrackingSchedule.Location = new System.Drawing.Point(608, 25);
+            this.dgvBacktrackingSchedule.Name = "dgvBacktrackingSchedule";
+            this.dgvBacktrackingSchedule.RowHeadersWidth = 51;
+            this.dgvBacktrackingSchedule.RowTemplate.Height = 24;
+            this.dgvBacktrackingSchedule.Size = new System.Drawing.Size(745, 590);
+            this.dgvBacktrackingSchedule.TabIndex = 2;
             // 
             // Form1
             // 
@@ -391,6 +440,9 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvSynergy)).EndInit();
+            this.tabPage4.ResumeLayout(false);
+            this.tabPage4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvBacktrackingSchedule)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -425,6 +477,10 @@
         private System.Windows.Forms.Button btnSaveSynergy;
         private System.Windows.Forms.Label lblStatus;
         private System.Windows.Forms.Button btnDeleteEmployee;
+        private System.Windows.Forms.TabPage tabPage4;
+        private System.Windows.Forms.Label lblStatusBacktracking;
+        private System.Windows.Forms.Button btnRunBacktracking;
+        private System.Windows.Forms.DataGridView dgvBacktrackingSchedule;
     }
 }
 
