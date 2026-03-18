@@ -33,10 +33,27 @@ namespace SafeShiftAI_GUI
             }
         }
 
+        // ==========================================
+
+        // קבועים (Constants) - הגדרות קנסות וטווחים
+
+        private const double INITIAL_SCORE = 100000.0;     // ציון התחלתי -
+                                                           // (100000.0 חוסכת למחשב את הצורך לעשות "המרת סוגים" (Casting) סמויה מ-int ל-double בכל איטרציה)
+
+        private const int HARD_CONSTRAINT_PENALTY = 10000; // קנס על אילוץ קשיח (כפילות, מחלה, תפקיד)
+        private const int SOFT_CONSTRAINT_PENALTY = 100;   // קנס על אילוץ רך (בוקר אחרי לילה, ותק)
+        private const int SYNERGY_MULTIPLIER = 5;          // מכפיל בונוס לסינרגיה טובה
+
+        private const int MAX_MONTHLY_SHIFTS = 9;          // מקסימום משמרות לעובד בחודש
+        private const int MIN_TEAM_SENIORITY = 10;         // ותק מינימלי לצוות
+        private const int MIN_TEAM_SYNERGY = 30;           // סינרגיה מינימלית לצוות
+        // ==========================================
+
+
         // הפונקציה המרכזית שמקבלת לוח (כרומוזום) ומחזירה ציון
         public double CalculateFitness(int[,,] chromosome)
         {
-            double score = 100000; // ציון בסיס לפי ההצעה
+            double score = INITIAL_SCORE; // ציון בסיס לפי ההצעה
 
             // לולאה ראשונה: עוברת על כל יום - 30 ימים בחודש
             for (int day = 0; day < 30; day++)
@@ -61,7 +78,7 @@ namespace SafeShiftAI_GUI
                         if (empIdNight != 0 && empIdMorning != 0 && empIdNight == empIdMorning)
                         {
                             // אותו עובד שובץ לבוקר מיד אחרי לילה
-                            score -= 100;
+                            score -= SOFT_CONSTRAINT_PENALTY;
                         }
                     }
                    
@@ -85,7 +102,7 @@ namespace SafeShiftAI_GUI
                             if (workersToday.Contains(employeeId))
                         {
                             // העובד כבר שובץ היום במשמרת אחרת
-                            score -= 10000;
+                            score -= HARD_CONSTRAINT_PENALTY;
                         }
                         else
                         {
@@ -98,25 +115,25 @@ namespace SafeShiftAI_GUI
                         if (data.Employees[employeeId].SickDays.Contains(day))
                         {
                            
-                            score -= 10000;
+                            score -= HARD_CONSTRAINT_PENALTY;
                         }
                         //אם אין התאמה בין התפקיד למשבצת,קנס של 10,000 נקודות על כל משמרת שבה חסר אחד מהתפקידים הנדרשים
                         if (role==0&& data.Employees[employeeId].Role!= Employee.EmployeeRole.MGR)
                         {
                             // אם אין התאמה בין התפקיד מנהל למשבצת 
-                            score -= 10000;
+                            score -= HARD_CONSTRAINT_PENALTY;
                         }
 
                         if (role == 1 && data.Employees[employeeId].Role != Employee.EmployeeRole.MED)
                         {
                             // אם אין התאמה בין התפקיד רופא למשבצת 
-                            score -= 10000;
+                            score -= HARD_CONSTRAINT_PENALTY;
                         }
 
                         if (role ==2 && data.Employees[employeeId].Role != Employee.EmployeeRole.DRV)
                         {
                             // אם אין התאמה בין התפקיד נהג למשבצת 
-                            score -= 10000;
+                            score -= HARD_CONSTRAINT_PENALTY;
                         }
 
                       }
@@ -134,9 +151,9 @@ namespace SafeShiftAI_GUI
                     {
                         // העדפת ותק גבוה: קנס של 100 נקודות על צוותים שהותק המצטבר שלהם נמוך מ10-שנים אילוץ רצויי
                         int SumSeniority= _employeeMap[mngId].Seniority +_employeeMap[medId].Seniority +_employeeMap[drvId].Seniority;
-                        if (SumSeniority<10)
+                        if (SumSeniority< MIN_TEAM_SENIORITY)
                     {
-                        score -= 100;
+                        score -= SOFT_CONSTRAINT_PENALTY;
                     }
 
                     //מדד הסינרגיה מחושב כסכום כלל הציונים החיוביים והשליליים של כל הצוותים בלוח. הציון המצטבר מוכפל במשקל של 5
@@ -149,13 +166,13 @@ namespace SafeShiftAI_GUI
                         if (medId < 1000 && drvId < 1000) synergySum += data.SynergyMatrix[medId, drvId];
 
                         //נוסחת בונוס הסינרגיה :בונוס הסינרגיה = 5 × סך ציון הסינרגיה המצטבר מכל הצוותים בלוח
-                        score += (synergySum * 5);
+                        score += (synergySum * SYNERGY_MULTIPLIER);
 
                     // סינרגיה בין הצוות חייבת להיות מטווח מינימלי: קנס של 10,000 נקודות על כל צוות שהציון המצטבר שלו נמוך מ 30 
 
-                    if (synergySum<30)
+                    if (synergySum< MIN_TEAM_SYNERGY)
                     {
-                        score -= 10000;
+                        score -= HARD_CONSTRAINT_PENALTY;
                     }
                     }
                 }
@@ -189,10 +206,10 @@ namespace SafeShiftAI_GUI
             foreach (var kvp in monthlyShiftCount)
             {
                 int shifts = kvp.Value;
-                if (shifts > 9)
+                if (shifts > MAX_MONTHLY_SHIFTS)
                 {
                     // קנס של 10,000 נקודות על כל משמרת נוספת מעל 9
-                    score -= (shifts - 9) * 10000;
+                    score -= (shifts - MAX_MONTHLY_SHIFTS) * HARD_CONSTRAINT_PENALTY;
                 }
             }
             // =========================================================

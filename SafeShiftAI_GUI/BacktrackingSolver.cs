@@ -26,6 +26,22 @@ namespace SafeShiftAI_GUI
         // תנאי העצירה כדי שהמחשב לא ייתקע לנצח (2 מיליון ניסיונות)
         private readonly long MaxIterations = 2000000;
 
+
+        // ==========================================
+
+        // קבועים (Constants) - הגדרות קנסות וטווחים
+
+        private const int MAX_MONTHLY_SHIFTS = 9;   // מקסימום משמרות בחודש לעובד
+        private const int MIN_TEAM_SENIORITY = 10;  // ותק צוותי מינימלי
+        private const int MIN_TEAM_SYNERGY = 30;    // ציון סינרגיה צוותי מינימלי
+
+        // ==========================================
+
+
+
+
+
+
         // בנאי (Constructor) 
         public BacktrackingSolver(Data_Layer dataManager)
         {
@@ -142,7 +158,7 @@ namespace SafeShiftAI_GUI
                     }
                 }
             }
-            if (monthlyShifts >= 9) return false; // עבר את המכסה החודשית - פסול!
+            if (monthlyShifts >= MAX_MONTHLY_SHIFTS) return false; // עבר את המכסה החודשית - פסול!
             /////////////////////////////////////////////////////////////////////////////////////
 
             // תפקיד מתאים
@@ -190,7 +206,7 @@ namespace SafeShiftAI_GUI
                     {
                         // בדיקה שהוותק של הצוות מעל 10
                         int sumSeniority = mng.Seniority + med.Seniority + emp.Seniority;
-                        if (sumSeniority < 10) return false;
+                        if (sumSeniority < MIN_TEAM_SENIORITY) return false;
 
                         // אילוץ סינרגיה צוותית מעל 30
                         int synergySum = 0;
@@ -198,7 +214,7 @@ namespace SafeShiftAI_GUI
                         if (mngId < 1000 && drvId < 1000) synergySum += data.SynergyMatrix[mngId, drvId];
                         if (medId < 1000 && drvId < 1000) synergySum += data.SynergyMatrix[medId, drvId];
 
-                        if (synergySum < 30) return false;
+                        if (synergySum < MIN_TEAM_SYNERGY) return false;
                     }
                 }
             }
