@@ -166,11 +166,87 @@ namespace SafeShiftAI_GUI
 
                 Chromosome bestSolution = await Task.Run(() => geneticEngine.RunEvolution());
 
+                //var uiList = geneticEngine.GetBestScheduleForUI();
+                //DisplaySchedule(uiList);
+
+                //lblStatus.Text = $"סיום! ציון סופי: {bestSolution.Fitness:0.00}";
+                //MessageBox.Show($"התהליך הסתיים בהצלחה!\nציון סופי: {bestSolution.Fitness:0.00}");
+
+                // 1. קודם כל מציגים את התוצאה של האלגוריתם הגנטי בטבלה
                 var uiList = geneticEngine.GetBestScheduleForUI();
                 DisplaySchedule(uiList);
+                lblStatus.Text = $"סיום שלב גנטי! ציון ביניים: {bestSolution.Fitness:0.00}";
+                lblStatus.ForeColor = System.Drawing.Color.Blue;
 
-                lblStatus.Text = $"סיום! ציון סופי: {bestSolution.Fitness:0.00}";
-                MessageBox.Show($"התהליך הסתיים בהצלחה!\nציון סופי: {bestSolution.Fitness:0.00}");
+                // 2. הקפצת חלון דיאלוג ששואל את הבוחן אם להפעיל את האלגוריתם ההיברידי
+                DialogResult dialogResult = MessageBox.Show(
+                    $"האלגוריתם הגנטי סיים בהצלחה!\nציון הלוח כרגע: {bestSolution.Fitness:0.00}\n\nהאם תרצה להפעיל אלגוריתם חיפוש מקומי (Steepest-Ascent Hill Climbing) לשיפור וליטוש סופי של הלוח?",
+                    "אופטימיזציה סופית (מערכת היברידית)",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question
+                );
+
+                // 3. אם המשתמש לחץ "כן"
+                if (dialogResult == DialogResult.Yes)
+                {
+                    lblStatus.Text = "מבצע ליטוש סופי (Local Search)... מחפש את השיפור המקסימלי";
+                    lblStatus.ForeColor = System.Drawing.Color.Orange; // צבע שמשדר עבודת רקע
+
+                    // שומרים את הציון לפני הליטוש כדי שנוכל להשוות
+                    double scoreBeforeLocalSearch = bestSolution.Fitness;
+
+                    // הרצת החיפוש המקומי ברקע (כדי שה-UI לא ייתקע)
+                    await Task.Run(() => geneticEngine.ExecuteLocalSearch(bestSolution));
+
+                    // עדכון הטבלה מחדש עם הלוח (בין אם השתנה ובין אם לא)
+                    uiList = geneticEngine.GetBestScheduleForUI();
+                    DisplaySchedule(uiList);
+
+                    // בודקים האם הציון באמת השתפר
+                    if (bestSolution.Fitness > scoreBeforeLocalSearch)
+                    {
+                        // --- מקרה 1: נמצא שיפור! ---
+                        lblStatus.Text = $"סיום היברידי! שופר מ-{scoreBeforeLocalSearch:0.00} ל-{bestSolution.Fitness:0.00}";
+                        lblStatus.ForeColor = System.Drawing.Color.Green;
+
+                        // עדכון הגרף עם הקפיצה
+                        if (chartFitness.Series[0].Points.Count > 0)
+                        {
+                            chartFitness.Series[0].Points.AddXY(3000, bestSolution.Fitness);
+                            chartFitness.Update();
+                        }
+
+                        MessageBox.Show(
+                            $"הליטוש הסתיים בהצלחה!\nהחיפוש המקומי סרק את כל האפשרויות ומצא שיפור.\n\nציון קודם: {scoreBeforeLocalSearch:0.00}\nציון סופי ומשופר: {bestSolution.Fitness:0.00}",
+                            "סיום תהליך היברידי (נמצא שיפור)",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information
+                        );
+                    }
+                    else
+                    {
+                        // --- מקרה 2: הלוח כבר היה מושלם (Local Optima) ---
+                        lblStatus.Text = $"הלוח אופטימלי! הציון נשאר: {bestSolution.Fitness:0.00}";
+                        lblStatus.ForeColor = System.Drawing.Color.Green;
+
+                        MessageBox.Show(
+                            $"הסריקה הסתיימה!\nהחיפוש המקומי בדק עשרות אלפי אפשרויות והוכיח שהלוח כבר נמצא באופטימום מקומי (הציון הגבוה ביותר האפשרי בסביבה זו).\n\nהציון נשאר מקסימלי: {bestSolution.Fitness:0.00}",
+                            "סיום תהליך היברידי (ללא שינוי)",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information
+                        );
+                    }
+                
+                }
+                else
+                {
+                    // אם המשתמש (או הבוחן) לחץ "לא" והסתפק בפתרון של הגנטי
+                    lblStatus.Text = $"סיום! ציון סופי: {bestSolution.Fitness:0.00}";
+                    lblStatus.ForeColor = System.Drawing.Color.Green;
+                    MessageBox.Show("השיבוץ הושלם ונשמר ללא ליטוש נוסף.", "סיום", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+
+                
             }
             catch (Exception ex)
             {
@@ -178,7 +254,9 @@ namespace SafeShiftAI_GUI
             }
             finally
             {
+                // שחרור כפתורים להרצה חוזרת 
                 btnRunAlgorithm.Enabled = true;
+               
             }
         }
 

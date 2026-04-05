@@ -304,6 +304,130 @@ namespace SafeShiftAI_GUI
             this.BestSolution = Chromosomes[0].Clone();
             return this.BestSolution;
         }
+
+        ////אלגוריתם טיפוס גבעות מה שהופך את המערכת שלנו להיות מערכת היברידית למעשה נעשה החלפות עובדים באותו תפקיד אם הדבר ישפר נשאיר אם לא נבטל
+        //public void ExecuteLocalSearch(Chromosome BestSolution)
+        //{
+        //    double currentBestFitness = BestSolution.Fitness;
+
+        //    // עוברים על כל התפקידים מנהל, רופא ואז נהג
+        //    for (int role = 0; role < 3; role++)
+        //    {
+        //        for (int day1 = 0; day1 < 30; day1++)
+        //        {
+        //            for (int shift1 = 0; shift1 < 3; shift1++)
+        //            {
+        //                for (int day2 = 0; day2 < 30; day2++)
+        //                {
+        //                    for (int shift2 = 0; shift2 < 3; shift2++)
+        //                    {
+        //                        // דילוג על אותו עובד עם עצמו באותה משמרת
+        //                        if (day1 != day2 || shift1 != shift2)
+        //                        {
+
+        //                            // החלפה זמנית ניסיון ליצירת לוח טוב יותר עם החלפה אחת
+        //                            int temp_id = BestSolution.Schedule[day1, shift1, role];
+        //                        BestSolution.Schedule[day1, shift1, role] = BestSolution.Schedule[day2, shift2, role];
+        //                        BestSolution.Schedule[day2, shift2, role] = temp_id;
+
+        //                        // נחשב את הציון של הלוח אחרי ההחלפה
+        //                        double newFitness = fitnessEvaluator.CalculateFitness(BestSolution.Schedule);
+
+        //                        // אם הציון גבוה יותר נשאיר אם לא נחזיר
+        //                        if (newFitness > currentBestFitness)
+        //                        {
+        //                            // ישנו שיפור ולכן נשאיר את ההחלפה ונעדכן את הציון 
+        //                            currentBestFitness = newFitness;
+        //                            BestSolution.Fitness = newFitness;
+        //                        }
+        //                        else
+        //                        {
+        //                            //אם אין שיפור או שהציון ירד נחזיר חזרה למצב הקודם
+        //                            temp_id = BestSolution.Schedule[day1, shift1, role];
+        //                            BestSolution.Schedule[day1, shift1, role] = BestSolution.Schedule[day2, shift2, role];
+        //                            BestSolution.Schedule[day2, shift2, role] = temp_id;
+        //                        }
+
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
+
+
+
+        ////אלגוריתם טיפוס גבעות מה שהופך את המערכת שלנו להיות מערכת היברידית למעשה נעשה החלפות עובדים באותו תפקיד אם הדבר ישפר נשאיר אם לא נבטל
+        // אלגוריתם טיפוס גבעות (Local Search) - שיטת טיפוס תלול 
+        public void ExecuteLocalSearch(Chromosome BestSolution)
+        {
+            double bestFitnessFound = BestSolution.Fitness; // המשתנה שישמור את השיא של הסריקה
+
+            //  משתנים לשמירת קואורדינטות של ההחלפה המנצחת ביותר כדי לא לאבד את הפתרון האולטימטיבי וכדי לא להתשתמש בclone ולפוצץ את הזיכרון
+            int bestRole = -1, bestDay1 = -1, bestShift1 = -1, bestDay2 = -1, bestShift2 = -1;
+
+            // עוברים על כל התפקידים: מנהל, רופא ואז נהג
+            for (int role = 0; role < 3; role++)
+            {
+                for (int day1 = 0; day1 < 30; day1++)
+                {
+                    for (int shift1 = 0; shift1 < 3; shift1++)
+                    {
+                        for (int day2 = 0; day2 < 30; day2++)
+                        {
+                            for (int shift2 = 0; shift2 < 3; shift2++)
+                            {
+                                // דילוג על אותו עובד עם עצמו באותה משמרת 
+                                if (day1 != day2 || shift1 != shift2)
+                                {
+                                    // החלפה זמנית - ניסיון ליצירת לוח טוב יותר
+                                    int temp_id = BestSolution.Schedule[day1, shift1, role];
+                                    BestSolution.Schedule[day1, shift1, role] = BestSolution.Schedule[day2, shift2, role];
+                                    BestSolution.Schedule[day2, shift2, role] = temp_id;
+
+                                    // נחשב את הציון של הלוח אחרי ההחלפה
+                                    double newFitness = fitnessEvaluator.CalculateFitness(BestSolution.Schedule);
+
+                                    // אם הציון גבוה יותר ממה שעד עכשיו מצאנו בסריקה ,נשמור את המיקומים
+                                    if (newFitness > bestFitnessFound)
+                                    {
+                                        // ישנו שיפור , נעדכן את שיא 
+                                        bestFitnessFound = newFitness;
+
+                                        // נשמור את נקודות הציון כדי שנוכל לבצע את ההחלפה בסוף
+                                        bestRole = role;
+                                        bestDay1 = day1;
+                                        bestShift1 = shift1;
+                                        bestDay2 = day2;
+                                        bestShift2 = shift2;
+                                    }
+
+                                    //   נחזיר את הלוח למצב הקודם כדי שהסריקה תמשיך על לוח נקי כדי שלא נאבד פתרונות שעלולים להיות טובים יותר אם נעשה שינוי דבר שקורה בטיפוס של בחירה ראשונה
+                                    temp_id = BestSolution.Schedule[day1, shift1, role];
+                                    BestSolution.Schedule[day1, shift1, role] = BestSolution.Schedule[day2, shift2, role];
+                                    BestSolution.Schedule[day2, shift2, role] = temp_id;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // אחרי שסרקנו את כל האפשריות, אם מצאנו שיפור אמיתי שגדול מהציון המקורי
+            // נבצע את ההחלפה באמת
+            if (bestFitnessFound > BestSolution.Fitness)
+            {
+                int temp_id = BestSolution.Schedule[bestDay1, bestShift1, bestRole];
+                BestSolution.Schedule[bestDay1, bestShift1, bestRole] = BestSolution.Schedule[bestDay2, bestShift2, bestRole];
+                BestSolution.Schedule[bestDay2, bestShift2, bestRole] = temp_id;
+
+                // נעדכן את הציון הסופי של הלוח
+                BestSolution.Fitness = bestFitnessFound;
+            }
+        }
+
+
         // פונקציה שממירה את הפתרון לפורמט שהטבלה מבינה
         public List<ShiftDisplayModel> GetBestScheduleForUI()
         {
