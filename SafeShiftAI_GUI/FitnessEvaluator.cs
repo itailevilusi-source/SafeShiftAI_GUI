@@ -58,7 +58,7 @@ namespace SafeShiftAI_GUI
             // לולאה ראשונה: עוברת על כל יום - 30 ימים בחודש
             for (int day = 0; day < 30; day++)
             {
-                HashSet<int> workersToday = new HashSet<int>();//רשימה של עובדים במשמרת
+                HashSet<int> workersToday = new HashSet<int>();//רשימה של עובדים שעבדו היום
 
                 //מניעת משמרת בוקר אחרי לילה: קנס של 100 נקודות על כל עובד המשובץ לבוקר מיד לאחר משמרת לילה
 
@@ -165,6 +165,7 @@ namespace SafeShiftAI_GUI
                         if (mngId < 1000 && drvId < 1000) synergySum += data.SynergyMatrix[mngId, drvId];
                         if (medId < 1000 && drvId < 1000) synergySum += data.SynergyMatrix[medId, drvId];
 
+                        //אם הצוות לא מסתדר קנס גדול אחרת בונוס גדול
                         //נוסחת בונוס הסינרגיה :בונוס הסינרגיה = 5 × סך ציון הסינרגיה המצטבר מכל הצוותים בלוח
                         score += (synergySum * SYNERGY_MULTIPLIER);
 
@@ -192,7 +193,7 @@ namespace SafeShiftAI_GUI
                         int empId = chromosome[d, s, r];
                         if (empId != 0) // אם יש פה עובד 
                         {
-                            if (!monthlyShiftCount.ContainsKey(empId))
+                            if (!monthlyShiftCount.ContainsKey(empId))//האם העובד כבר קיים במילון?
                             {
                                 monthlyShiftCount[empId] = 0;
                             }

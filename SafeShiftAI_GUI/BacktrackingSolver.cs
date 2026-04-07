@@ -16,6 +16,7 @@ namespace SafeShiftAI_GUI
         // הלוח שלנו כרגע 
         private int[,,] currentSchedule;
 
+        //שומר את התוצאה הכי טובה שהגענו אליה לפני שהאלגוריתם קרס או נתקע
         private int[,,] bestPartialSchedule; // הלוח הכי טוב - "צילום המסך" של השיא
 
         // כמה איטרציות עשינו
@@ -23,6 +24,7 @@ namespace SafeShiftAI_GUI
         // כמה ימים הצלחנו להתקדם 
         public int MaxDayReached { get; private set; }
 
+        //הגבלתי את האלגוריתם ל-2 מיליון איטרציות כדי שמחשב לא יקפא לתמיד וידעתי שזה יכשל כי מדובר בכמות קומבנציות אדירה
         // תנאי העצירה כדי שהמחשב לא ייתקע לנצח (2 מיליון ניסיונות)
         private readonly long MaxIterations = 2000000;
 
@@ -51,7 +53,8 @@ namespace SafeShiftAI_GUI
             this.currentSchedule = new int[30, 3, 3];
             this.bestPartialSchedule = new int[30, 3, 3];
 
-            // איפוס הלוח: ממלאים ב-(1-)
+            //בבנאי אנחנו ממלאים את כל הלוח במינוס 1 מכיוון שתעודת זהות חוקית מתחילה ב0 והערך הזה אומר שאין אף אחד במשבצת
+            // -איפוס הלוח: ממלאים ב-1
             for (int i = 0; i < 30; i++)
             {
                 for (int j = 0; j < 3; j++)
@@ -136,6 +139,7 @@ namespace SafeShiftAI_GUI
             return false;
         }
 
+        //מקבילה של ה-FitnessEvaluator
         // --- בדיקת אילוצים ---
         private bool IsValid(Employee emp, int day, int shift, int roleIndex)
         {
@@ -224,6 +228,7 @@ namespace SafeShiftAI_GUI
         }
 
         // פונקציית עזר לשמירת הלוח  
+        //יש לנו את הפונקציה clone אך מכיוון שאנו לא עובדים עם chormosome שיש לו גם לוח וגם ציון אנו עובדים רק עם לוח
         private void SaveSnapshot()
         {
             for (int i = 0; i < 30; i++)

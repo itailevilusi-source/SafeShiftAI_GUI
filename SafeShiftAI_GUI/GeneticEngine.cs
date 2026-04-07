@@ -9,6 +9,7 @@ namespace SafeShiftAI_GUI
 {
     internal class GeneticEngine
     {
+        //רשימה של הכרומוזומים 
         List<Chromosome> Chromosomes = new List<Chromosome>();
         Data_Layer data_layer;
         FitnessEvaluator fitnessEvaluator;
@@ -69,6 +70,7 @@ namespace SafeShiftAI_GUI
             int ElitismCount = Math.Min(5, Chromosomes.Count);
             for (int i = 0; i < ElitismCount; i++)// אליטיזם: 5 הכי טובים עוברים ישר לדור הבא
             {
+                //זה מבטיח שהפתרונות הכי טובים שמצאנו לא ייהרסו בטעות על ידי מוטציה או זיווג גרוע ובנוסף הציון הכולל של המערכת לעולם לא יירד
                 nextGeneration.Add(Chromosomes[i].Clone()); //  להעתקה Clone
             }
 
@@ -82,6 +84,7 @@ namespace SafeShiftAI_GUI
             //מחיקה בטוחה - מוחקים רק אם יש יותר מ-50 איברים
             if (Chromosomes.Count > 50)
             {
+                //מוחקים את ה-50 הגרועים ביותר בסוף הרשימה כדי לפנות מקום לילדים החדשים
                 // מחשבים כמה איברים נשאר למחוק מהמקום ה-50 ועד הסוף
                 Chromosomes.RemoveRange(50, Chromosomes.Count - 50);//כדי לקחת את הטובים ביותר שנמצאים בהתחלה בגלל המיון
             }
@@ -93,7 +96,7 @@ namespace SafeShiftAI_GUI
         //Crossover
         public void ExecuteCrossover()
         {
-            // הגנה: אם אין לפחות שני הורים, אי אפשר לבצע שילוב גנטי
+            // הגנה-חובה: אם אין לפחות שני הורים, אי אפשר לבצע שילוב גנטי
             if (parents.Count < 2) return;
 
             while (nextGeneration.Count<100)
@@ -190,6 +193,7 @@ namespace SafeShiftAI_GUI
             int shift_2 = 0;
             int role = 0;
 
+            //זה מכניס אלמנט אקראי שמונע מהאלגוריתם להיתקע באופטימום מקומי
             //רצים על כל האוכלוסייה חוץ מה-5 הראשונים לפי עיקרון אלטיזם השארת פתרונות טובים לדור הבא
             for (int i = 5; i < Chromosomes.Count; i++)
             {
@@ -225,6 +229,7 @@ namespace SafeShiftAI_GUI
 
         // הוספת משתנה מחלקה שיחזיק את הפתרון הסופי
         public Chromosome BestSolution { get; private set; }
+
         //public Chromosome RunEvolution()
         //{
         //    // אתחול האוכלוסייה
@@ -297,7 +302,9 @@ namespace SafeShiftAI_GUI
                     {
                         lastBestFitness = Chromosomes[0].Fitness;
                         // הפעלת האירוע - ה-GUI יאזין לו
+                        //היי, מצאתי לוח טוב יותר, תעדכן את הגרף invoke-
                         OnGenerationImproved?.Invoke(Chromosomes[0], gen);
+
                     }
                 }
             }
@@ -431,32 +438,36 @@ namespace SafeShiftAI_GUI
         // פונקציה שממירה את הפתרון לפורמט שהטבלה מבינה
         public List<ShiftDisplayModel> GetBestScheduleForUI()
         {
+            //רשימה ריקה אליה נדחוף את כל השורות 
             List<ShiftDisplayModel> uiList = new List<ShiftDisplayModel>();
             string[] shiftNames = { "Morning", "Evening", "Night" };
 
+            //מניעת קריסה אם אין פתרון
             if (BestSolution == null || BestSolution.Schedule == null) return uiList;
 
             for (int day = 0; day < 30; day++)
             {
                 for (int shift = 0; shift < 3; shift++)
                 {
+                    //שינוי היום בהצגה כל פעם שמהמשרת היא 0 נציג את היום +1 אחרת כלום
                     string dayDisplay = (shift == 0) ? (day + 1).ToString() : "";
 
                     int mgrId = BestSolution.Schedule[day, shift, 0];
                     int docId = BestSolution.Schedule[day, shift, 1];
                     int drvId = BestSolution.Schedule[day, shift, 2];
 
+                    //הוספת השורה
                     uiList.Add(new ShiftDisplayModel
                     {
                         Day = dayDisplay,
                         Shift = shiftNames[shift],
 
-                        // === כאן השינוי: שימוש ב-GetEmployeeDetails במקום GetName ===
+                        //  GetEmployeeDetails  
                         // זה יציג: "Danny (305678912)"
                         ManagerID = data_layer.GetEmployeeDetails(mgrId),
                         DoctorID = data_layer.GetEmployeeDetails(docId),
                         DriverID = data_layer.GetEmployeeDetails(drvId)
-                        // ==============================================================
+                        
                     });
                 }
             }
