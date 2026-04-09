@@ -103,7 +103,7 @@ namespace SafeShiftAI_GUI
 
         public Data_Layer()
         {
-            DatabaseHelper db = new DatabaseHelper();
+            DatabaseHelper db = new DatabaseHelper();//טלפון לשרת שלנו
             DataTable dt = db.GetEmployees();
             var synergyData = db.LoadSynergyData();
 
