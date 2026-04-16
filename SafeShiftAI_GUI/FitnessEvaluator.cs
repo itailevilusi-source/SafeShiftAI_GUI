@@ -13,7 +13,7 @@ namespace SafeShiftAI_GUI
         private Data_Layer data;//Data_Layer כפרמטר חיבור הנתונים למחלקת פונקציית הכושר היא מקבלת את 
 
 
-        //  חייבים מילון בגלל הsql 
+        //  חייבים מילון בגלל ה sql 
         private Dictionary<int, Employee> _employeeMap;
 
         // בנאי שמקבל את מאגר הנתונים
@@ -22,7 +22,7 @@ namespace SafeShiftAI_GUI
             this.data = dataManager;
 
 
-            // --- אתחול המילון (חובה כדי למנוע קריסה) ---
+            //  אתחול המילון -חובה כדי למנוע קריסה 
             _employeeMap = new Dictionary<int, Employee>();
             foreach (var emp in data.Employees)//Employee emp in data.Employees=var
             {
@@ -95,9 +95,9 @@ namespace SafeShiftAI_GUI
                         int employeeId = chromosome[day, shift, role];
 
                         //בדיקה כפילות עובד במשמרת , קנס של 10,000 נקודות עבור כל משמרת שבה עובד משובץ יותר מפעם אחת
-                        if (employeeId != 0 && _employeeMap.ContainsKey(employeeId))
+                        if (employeeId != 0 &&_employeeMap.TryGetValue(employeeId, out Employee currentEmp))
                      {  
-                            Employee currentEmp = _employeeMap[employeeId];
+                            //Employee currentEmp = _employeeMap[employeeId];שגיאת חריגה
 
                             if (workersToday.Contains(employeeId))
                         {
@@ -111,26 +111,42 @@ namespace SafeShiftAI_GUI
 
 
 
-                        // אם הוא חולה, נוריד 10,000 נקודות לפי האילוץ הקשיח בהצעה
-                        if (data.Employees[employeeId].SickDays.Contains(day))
-                        {
-                           
-                            score -= HARD_CONSTRAINT_PENALTY;
-                        }
-                        //אם אין התאמה בין התפקיד למשבצת,קנס של 10,000 נקודות על כל משמרת שבה חסר אחד מהתפקידים הנדרשים
-                        if (role==0&& data.Employees[employeeId].Role!= Employee.EmployeeRole.MGR)
+                            // אם הוא חולה, נוריד 10,000 נקודות לפי האילוץ הקשיח בהצעה
+
+                            if (currentEmp.SickDays.Contains(day))
+                            {
+                                score -= HARD_CONSTRAINT_PENALTY;
+                            }
+
+
+                            //// חיפוש ברשימה לפי הid
+                            //var currentWorker = data.Employees.FirstOrDefault(e => e.ID == employeeId);
+
+                            //if (currentWorker != null && currentWorker.SickDays.Contains(day))
+                            //{
+                            //    score -= HARD_CONSTRAINT_PENALTY;
+                            //}
+
+                            //if (data.Employees[employeeId].SickDays.Contains(day))
+                            //{
+
+                            //    score -= HARD_CONSTRAINT_PENALTY;
+                            //}
+
+                            //אם אין התאמה בין התפקיד למשבצת,קנס של 10,000 נקודות על כל משמרת שבה חסר אחד מהתפקידים הנדרשים
+                            if (role==0&& currentEmp.Role != Employee.EmployeeRole.MGR)
                         {
                             // אם אין התאמה בין התפקיד מנהל למשבצת 
                             score -= HARD_CONSTRAINT_PENALTY;
                         }
 
-                        if (role == 1 && data.Employees[employeeId].Role != Employee.EmployeeRole.MED)
+                        if (role == 1 && currentEmp.Role != Employee.EmployeeRole.MED)
                         {
                             // אם אין התאמה בין התפקיד רופא למשבצת 
                             score -= HARD_CONSTRAINT_PENALTY;
                         }
 
-                        if (role ==2 && data.Employees[employeeId].Role != Employee.EmployeeRole.DRV)
+                        if (role ==2 && currentEmp.Role != Employee.EmployeeRole.DRV)
                         {
                             // אם אין התאמה בין התפקיד נהג למשבצת 
                             score -= HARD_CONSTRAINT_PENALTY;
@@ -158,9 +174,9 @@ namespace SafeShiftAI_GUI
 
                     //מדד הסינרגיה מחושב כסכום כלל הציונים החיוביים והשליליים של כל הצוותים בלוח. הציון המצטבר מוכפל במשקל של 5
 
-                    // שליפת הערכים מהמטריצה (3 זוגות אפשריים בצוות של 3)
+                    // שליפת הערכים מהמטריצה 3 זוגות אפשריים בצוות של 3
                     int synergySum = 0;
-                        // מוודאים שלא חורגים מגבולות המערך
+                        // מוודאים שלא חורגים מגבולות המערך שמוגדר על 1000 1000
                         if (mngId < 1000 && medId < 1000) synergySum += data.SynergyMatrix[mngId, medId];
                         if (mngId < 1000 && drvId < 1000) synergySum += data.SynergyMatrix[mngId, drvId];
                         if (medId < 1000 && drvId < 1000) synergySum += data.SynergyMatrix[medId, drvId];

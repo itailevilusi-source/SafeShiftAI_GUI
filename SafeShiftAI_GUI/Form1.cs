@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Threading.Tasks; // חובה עבור async/await
+using System.Threading.Tasks; //  עבור async/await מניעת קיפאון של המסך
 using System.Windows.Forms;
 
 namespace SafeShiftAI_GUI
 {
+    //partial-הform מחולק לשני חלקים המטרה להדגיש שמדובר במחלקה אחת גדולה
     public partial class Form1 : Form
     {
         private DatabaseHelper dbHelper;
@@ -14,8 +15,8 @@ namespace SafeShiftAI_GUI
 
         public Form1()
         {
-            InitializeComponent();
-            ApplyModernDesign();
+            InitializeComponent();//מציירת את הכפתורים והטבלאות על המסך לפני שרואים אותם
+            ApplyModernDesign();//פונקצית עיצוב 
             dbHelper = new DatabaseHelper();
 
             // מילוי רשימת הימים (1-30) בתיבת הסימון
@@ -28,11 +29,11 @@ namespace SafeShiftAI_GUI
             LoadSynergyToGrid();
         }
 
-        // --- פונקציות עזר לאתחול ---
+        //  פונקציות עזר לאתחול 
 
         private void PopulateSickDaysList()
         {
-            clbSickDays.Items.Clear();
+            clbSickDays.Items.Clear();//ניקוי הרשימה לפני המילוי
             for (int i = 1; i <= 30; i++)
             {
                 clbSickDays.Items.Add($"יום {i}");
@@ -41,53 +42,60 @@ namespace SafeShiftAI_GUI
 
         private void LoadEmployeesList()
         {
-            DataTable dt = dbHelper.GetEmployees();
+            DataTable dt = dbHelper.GetEmployees();//טבלת העובדים מsql
 
-            // 1. עדכון הטבלה הגדולה במסך (אם יש לך כזו)
+            //  עדכון הטבלה הגדולה במסך אם יש 
             if (dgvEmployees != null) dgvEmployees.DataSource = dt;
 
-            // 2. עדכון רשימת העובדים בבחירת ימי מחלה
-            // אנחנו מציגים את השם, אבל הערך שנשמר מאחורי הקלעים הוא ה-ID הפנימי
+            //  עדכון רשימת העובדים-מעל ימי המחלה
+            //הערך הוא הid הפנימי אך אנחנו מציגים את השם של העובד
             if (cmbSickEmployee != null)
             {
-                cmbSickEmployee.DataSource = dt;
-                cmbSickEmployee.DisplayMember = "Name"; // מה רואים
-                cmbSickEmployee.ValueMember = "Id";     // מה הערך (מזהה פנימי)
+               
+                cmbSickEmployee.DataSource = dt;//מסירת טבלת הנתונים כdata
+                cmbSickEmployee.DisplayMember = "Name"; // מה רואים ובוחרים במסך
+                cmbSickEmployee.ValueMember = "Id";     //-id כדי לשלוח לשרת מה הערך האמיתי מזהה פנימי זה הערך שמעניין אותנו והוא זה שנשמר
+                                                        //זאת כדי להבטיח שאם לשני עובדים יש את אותו שם לכל אחד יהיה מזהה יחודי
             }
         }
 
-        // --- כפתור 1: הוספת עובד חדש (כולל תעודת זהות) ---
+        // כפתור 1: הוספת עובד חדש  
         private void btnAddEmployee_Click(object sender, EventArgs e)
         {
-            string name = txtName.Text;
-            string realId = txtRealID.Text; // התיבה החדשה שיצרת
-            string role = cmbRole.SelectedItem?.ToString(); // וודא שיש לך ComboBox לתפקידים בשם cmbRole
+            //TextBox:אם המשתמש לא הקליד כלום אז יהיה ""
+            //ComboBox:אם המשתמש פתח ולא בחר כלום יהיה null
 
-            // המרה בטוחה של הוותק
+            //לוקחים את הנתונים מהדף שלנו 
+            string name = txtName.Text;
+            string realId = txtRealID.Text; 
+            string role = cmbRole.SelectedItem?.ToString(); //מוודאים שאכן המשתמש בחר תפקיד מהתיבת בחירה
+                                                            //  ואל תנסה להמיר אותו למחרוזת כי אז התוכנה תקרוס אלה פשוט תשאר הסימן שאלה אומר שאם יש null תשאיר אותו 
+
+            // המרה בטוחה של הוותק מנסים להמיר לint אם לא מצליחים אז וותק=0
             if (!int.TryParse(txtSeniority.Text, out int seniority)) seniority = 0;
 
             // בדיקות תקינות
             if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(role) || string.IsNullOrEmpty(realId))
             {
-                MessageBox.Show("נא למלא את כל השדות: שם, תעודת זהות ותפקיד.");
+                MessageBox.Show("נא למלא את כל השדות: שם, תעודת זהות ותפקיד");
                 return;
             }
 
-            // שמירה ב-DB באמצעות הפונקציה המעודכנת
+            // שמירה העובד במסד הנתונים  
             dbHelper.AddEmployee(realId, name, role, seniority);
 
-            MessageBox.Show("העובד נוסף בהצלחה!");
+            MessageBox.Show("העובד נוסף בהצלחה");//הודעה קופצת למסך
 
             // ניקוי שדות ורענון התצוגה
             txtName.Clear();
             txtRealID.Clear();
             txtSeniority.Value = 0;
             LoadEmployeesList(); // חשוב: מרענן גם את הרשימה בניהול ימי מחלה
-          //  רענון גם של המטריצה כדי שהעובד החדש יופיע 
+             //  רענון גם של המטריצה כדי שהעובד החדש יופיע 
             LoadSynergyToGrid();
         }
 
-        // --- כפתור 2: שמירת ימי מחלה ---
+        // כפתור 2: שמירת ימי מחלה 
         private void btnSaveSickDays_Click(object sender, EventArgs e)
         {
             // בדיקה שנבחר עובד
@@ -97,116 +105,119 @@ namespace SafeShiftAI_GUI
                 return;
             }
 
-            // המרת הערך הנבחר ל-INT (זה ה-ID הפנימי)
+            // מנסים להמיר את את העובד שבחרו בשם שלמעשה מדובר בid האישי שלו לint
+            //הגדרנו בsql את הid int אבל SelectedValue מחזיר אובייקט ולכן צריך להמיר
             if (!int.TryParse(cmbSickEmployee.SelectedValue.ToString(), out int internalId)) return;
 
-            int count = 0;
+            dbHelper.ClearSickDaysForEmployee(internalId);//מחיקת הימים של העובד
+
+            int count = 0;//כמות הימים שנבחרו
 
             // מעבר על כל הימים שסומנו ב-V
             foreach (var item in clbSickDays.CheckedItems)
             {
-                // הטקסט הוא "יום 1", "יום 5". נחלץ את המספר.
+                //  הטקסט הוא "יום 1" למשל ניקח רק את המספר אנחנו מחליפים את יום ב ""
                 string dayText = item.ToString().Replace("יום ", "");
                 int dayNum = int.Parse(dayText);
 
-                // המרה לאינדקס מערך (0-29) במקום (1-30)
+                //צריך לחסר באחד מכיוון שהמערך הוא מ0 ולא מ1 כמו שמוצג למשתמש
                 int arrayDayIndex = dayNum - 1;
 
-                // שמירה ב-DB
+                // שמירה בבסיס הנתונים
                 dbHelper.AddSickDay(internalId, arrayDayIndex);
                 count++;
             }
 
             if (count > 0)
             {
-                MessageBox.Show($"נשמרו {count} ימי מחלה לעובד שנבחר!");
+                MessageBox.Show($"נשמרו {count} ימי מחלה לעובד שנבחר");
 
-                // איפוס הסימונים לפעם הבאה
+                // איפוס הסימונים לפעם הבאה -ניקוי
                 for (int i = 0; i < clbSickDays.Items.Count; i++)
                     clbSickDays.SetItemChecked(i, false);
             }
             else
             {
-                MessageBox.Show("לא נבחרו ימים לסימון.");
+                MessageBox.Show("לא נבחרו ימים שסומנו");
             }
         }
 
-        // --- כפתור 3: הרצת האלגוריתם ---
-        // --- עדכון 1: כפתור ההפעלה (מנקה את הגרף בהתחלה) ---
+        // כפתור 3: הרצת האלגוריתם 
+        //async:לעשה הפונקציה הזו הולכת לחכות לפעולה  באמצעות שימוש ב await
         private async void btnRunAlgorithm_Click(object sender, EventArgs e)
         {
-            btnRunAlgorithm.Enabled = false;
-            lblStatus.Text = "מתחיל תהליך...";
+            btnRunAlgorithm.Enabled = false;// נועלים את הכפתור שהמשתמש לא יריץ כמה חישוביים גנטיים במקביל
+            lblStatus.Text = "מתחיל תהליך";
 
-            // ניקוי טבלה
+            // ניקוי טבלה בהתחלה
             dgvSchedule.DataSource = null;
 
-            // === קוד חדש לגרף ===
-            // וודא שיש סדרה בגרף
+            
+            // מוודאים שאין קו
             if (chartFitness.Series.Count == 0)
             {
-                chartFitness.Series.Add("Fitness");
-                chartFitness.Series["Fitness"].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-                chartFitness.Series["Fitness"].BorderWidth = 3;
+                chartFitness.Series.Add("Fitness");//שם הסדרה
+                chartFitness.Series["Fitness"].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;//סוג קו רציף
+                chartFitness.Series["Fitness"].BorderWidth = 3;//עובי 3 פיקסלים
             }
             // ניקוי נקודות ישנות
             chartFitness.Series[0].Points.Clear();
-            // ====================
+            
 
             try
             {
-                // ... (כל קוד הטעינה והבדיקות שלך נשאר אותו דבר) ...
+               //טעינה של הדאטה 
                 Data_Layer currentData = new Data_Layer();
                 if (currentData.Employees.Count == 0) throw new Exception("אין עובדים!");
 
                 geneticEngine = new GeneticEngine(currentData);
-                geneticEngine.OnGenerationImproved += GeneticEngine_OnGenerationImproved;
+                geneticEngine.OnGenerationImproved += GeneticEngine_OnGenerationImproved;//בכל פעם שמוצאים דור יותר טוב מציירים נקודה בגרף באמצעות הפונקציה
 
-                lblStatus.Text = "מריץ אופטימיזציה...";
+                lblStatus.Text = "מריץ אופטימיזציה";
 
-                Chromosome bestSolution = await Task.Run(() => geneticEngine.RunEvolution());
+                Chromosome bestSolution = await Task.Run(() => geneticEngine.RunEvolution());//תהליך רקע  שלא עובד עלThread הראשי 
 
                 //var uiList = geneticEngine.GetBestScheduleForUI();
                 //DisplaySchedule(uiList);
 
-                //lblStatus.Text = $"סיום! ציון סופי: {bestSolution.Fitness:0.00}";
+                //lblStatus.Text = $"סיום ציון סופי: {bestSolution.Fitness:0.00}";
                 //MessageBox.Show($"התהליך הסתיים בהצלחה!\nציון סופי: {bestSolution.Fitness:0.00}");
 
-                // 1. קודם כל מציגים את התוצאה של האלגוריתם הגנטי בטבלה
+                //  קודם כל מציגים את התוצאה של האלגוריתם הגנטי בטבלה ביניים לפני שדרוג
                 var uiList = geneticEngine.GetBestScheduleForUI();
                 DisplaySchedule(uiList);
-                lblStatus.Text = $"סיום שלב גנטי! ציון ביניים: {bestSolution.Fitness:0.00}";
+                lblStatus.Text = $"סיום שלב גנטי ציון ביניים: {bestSolution.Fitness:0.00}";
                 lblStatus.ForeColor = System.Drawing.Color.Blue;
 
-                // 2. הקפצת חלון דיאלוג ששואל את הבוחן אם להפעיל את האלגוריתם ההיברידי
+                //  הקפצת חלון  ששואל את המשתמש אם להפעיל את האלגוריתם ההיברידי שלנו
                 DialogResult dialogResult = MessageBox.Show(
-                    $"האלגוריתם הגנטי סיים בהצלחה!\nציון הלוח כרגע: {bestSolution.Fitness:0.00}\n\nהאם תרצה להפעיל אלגוריתם חיפוש מקומי (Steepest-Ascent Hill Climbing) לשיפור וליטוש סופי של הלוח?",
+                    $"האלגוריתם הגנטי סיים בהצלחה\nציון הלוח כרגע: {bestSolution.Fitness:0.00}\n\nהאם תרצה להפעיל אלגוריתם חיפוש מקומי (Steepest-Ascent Hill Climbing) לשיפור וליטוש סופי של הלוח?",
                     "אופטימיזציה סופית (מערכת היברידית)",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Question
                 );
 
-                // 3. אם המשתמש לחץ "כן"
+                // אם נלחץ כן
                 if (dialogResult == DialogResult.Yes)
                 {
                     lblStatus.Text = "מבצע ליטוש סופי (Local Search)... מחפש את השיפור המקסימלי";
-                    lblStatus.ForeColor = System.Drawing.Color.Orange; // צבע שמשדר עבודת רקע
+                    lblStatus.ForeColor = System.Drawing.Color.Orange; //  צבע רקע שהתהליך קורה 
 
                     // שומרים את הציון לפני הליטוש כדי שנוכל להשוות
                     double scoreBeforeLocalSearch = bestSolution.Fitness;
 
-                    // הרצת החיפוש המקומי ברקע (כדי שה-UI לא ייתקע)
+                    //שוב כדי שלא יתקע המסך משתמשים בתהליכון רקע
                     await Task.Run(() => geneticEngine.ExecuteLocalSearch(bestSolution));
 
-                    // עדכון הטבלה מחדש עם הלוח (בין אם השתנה ובין אם לא)
+                    // עדכון הטבלה מחדש עם הלוח גם אם היה שינוי וגם אם לא
                     uiList = geneticEngine.GetBestScheduleForUI();
                     DisplaySchedule(uiList);
 
                     // בודקים האם הציון באמת השתפר
                     if (bestSolution.Fitness > scoreBeforeLocalSearch)
                     {
-                        // --- מקרה 1: נמצא שיפור! ---
-                        lblStatus.Text = $"סיום היברידי! שופר מ-{scoreBeforeLocalSearch:0.00} ל-{bestSolution.Fitness:0.00}";
+                        // מקרה 1: היה שיפור
+                        lblStatus.Text = $"סיום היברידי שופר מ-{scoreBeforeLocalSearch:0.00} ל-{bestSolution.Fitness:0.00}";
                         lblStatus.ForeColor = System.Drawing.Color.Green;
 
                         // עדכון הגרף עם הקפיצה
@@ -217,7 +228,7 @@ namespace SafeShiftAI_GUI
                         }
 
                         MessageBox.Show(
-                            $"הליטוש הסתיים בהצלחה!\nהחיפוש המקומי סרק את כל האפשרויות ומצא שיפור.\n\nציון קודם: {scoreBeforeLocalSearch:0.00}\nציון סופי ומשופר: {bestSolution.Fitness:0.00}",
+                            $"הליטוש הסתיים בהצלחה\nהחיפוש המקומי סרק את כל האפשרויות ומצא שיפור.\n\nציון קודם: {scoreBeforeLocalSearch:0.00}\nציון סופי ומשופר: {bestSolution.Fitness:0.00}",
                             "סיום תהליך היברידי (נמצא שיפור)",
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Information
@@ -225,8 +236,8 @@ namespace SafeShiftAI_GUI
                     }
                     else
                     {
-                        // --- מקרה 2: הלוח כבר היה מושלם (Local Optima) ---
-                        lblStatus.Text = $"הלוח אופטימלי! הציון נשאר: {bestSolution.Fitness:0.00}";
+                        // מקרה 2: הלוח היה מושלםLocal Optimom
+                        lblStatus.Text = $"הלוח אופטימלי הציון נשאר: {bestSolution.Fitness:0.00}";
                         lblStatus.ForeColor = System.Drawing.Color.Green;
 
                         MessageBox.Show(
@@ -240,14 +251,15 @@ namespace SafeShiftAI_GUI
                 }
                 else
                 {
-                    // אם המשתמש (או הבוחן) לחץ "לא" והסתפק בפתרון של הגנטי
-                    lblStatus.Text = $"סיום! ציון סופי: {bestSolution.Fitness:0.00}";
+                    //  אם המשתמש לחץ לא והסתפק בפתרון של הגנטי נאפשר לו
+                    lblStatus.Text = $"סיום ציון סופי: {bestSolution.Fitness:0.00}";
                     lblStatus.ForeColor = System.Drawing.Color.Green;
                     MessageBox.Show("השיבוץ הושלם ונשמר ללא ליטוש נוסף.", "סיום", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
 
                 
             }
+            //תפיסת השגיאות
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
@@ -260,92 +272,104 @@ namespace SafeShiftAI_GUI
             }
         }
 
-        // --- עדכון 2: האירוע בזמן אמת (מוסיף נקודות לגרף) ---
+        // עדכון האירוע בזמן אמת-מוסיף נקודות לגרף : += GeneticEngine_OnGenerationImproved
         private void GeneticEngine_OnGenerationImproved(Chromosome bestSoFar, int generation)
         {
+            //רק תהליך UI Thread רשאי לשנות את המסך
             // משתמשים ב-Invoke כדי לעדכן את המסך מתהליך הרקע
             this.Invoke(new Action(() =>
             {
-                // עדכון הטקסט
+                // עדכון הטקסט מה הציון והדור איך גבוהים שהגענו
                 lblStatus.Text = ($"דור: {generation} | ציון: {bestSoFar.Fitness:0.00}");
 
-                // === עדכון הגרף (החלק החסר!) ===
+                // עדכון הגרף  
+                //מוודאים שיש כבר קו על המסך שיש להמשיך
                 if (chartFitness.Series.Count > 0)
                 {
-                    // הוספת נקודה: ציר X = דור, ציר Y = ציון
+                    // מוסיפים נקודה 
+                    //ציר x: דור
+                    //ציר y: ציון הלוח
+                    //Chart יודע אוטומטית לחבר את הנקודה החדשה לנקודה הקודמת עם קו כי הוא מוגדר כקו רציף מעוגל
                     chartFitness.Series[0].Points.AddXY(generation, bestSoFar.Fitness);
 
-                    // גורם לגרף להתעדכן מיד
+                    // גורם לגרף להתעדכן מיד ולא לחכות כדי שהגרף יראה חי על המסך
                     chartFitness.Update();
                 }
-                // ================================
+               
             }));
         }
 
+        //טבלת הסינגריה של העובדים
         private void LoadSynergyToGrid()
         {
             if (dgvSynergy == null) return;
 
-            // 1. איפוס ועיצוב בסיסי
+            //  איפוס ועיצוב בסיסי תמיד מתחילים מלוח ריק כדי שלא יהיה את העובד פעמיים שיהיה אחיד
             dgvSynergy.DataSource = null;
-            dgvSynergy.Rows.Clear();
-            dgvSynergy.Columns.Clear();
-            dgvSynergy.AllowUserToAddRows = false;
+            dgvSynergy.Rows.Clear();//ניקוי שורות
+            dgvSynergy.Columns.Clear();//ניקוי עמודות
+            dgvSynergy.AllowUserToAddRows = false;//מונע מהמשתמש להוסיף שורה מתחת לטבלה
 
-            // ביטול דחיסת העמודות - זה מה שגורם לבלאגן!
+            // ביטול דחיסת העמודות זה גרם לי לבלאגן כי המחשב מנסה לדחוף את כל העמודות לגודל המסך ואז זה לא קריא
             dgvSynergy.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
 
-            // עיצוב כיוון טקסט (חשוב לעברית)
+            //  כיוון טקסט לעברית
             dgvSynergy.RightToLeft = RightToLeft.Yes;
 
-            // 2. שליפת נתונים
+            // שליפת נתונים
             DataTable dtEmployees = dbHelper.GetEmployees();
-            var synergyDict = dbHelper.LoadSynergyData();
+            var synergyDict = dbHelper.LoadSynergyData();// DatabaseHelperמקבלים את הנתונים בתור מילון כמו שבניתי 
+                                                         //Dictionary<string, int> "1-2",ציון
 
-            // 3. הוספת עמודה ראשונה קבועה (שמות העובדים)
+            // הוספת עמודה ראשונה קבועה שמות העובדים
             dgvSynergy.Columns.Add("MainColumn", "עובד");
             dgvSynergy.Columns["MainColumn"].ReadOnly = true;
-            dgvSynergy.Columns["MainColumn"].Frozen = true; // הקפאת העמודה!
-            dgvSynergy.Columns["MainColumn"].Width = 150;   // רוחב נדיב לשם
+            dgvSynergy.Columns["MainColumn"].Frozen = true; // הקפאת העמודה גם אם גוללים עדין נראה את העמודה
+            //צבע ורוחב בולטים לעמודה זו
+            dgvSynergy.Columns["MainColumn"].Width = 150;   // רוחב גדול לשם
             dgvSynergy.Columns["MainColumn"].DefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(230, 230, 250); // צבע רקע שונה
             dgvSynergy.Columns["MainColumn"].DefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 9, System.Drawing.FontStyle.Bold);
 
-            // 4. יצירת עמודות לכל עובד
+            // יצירת עמודות לכל עובד
             foreach (DataRow row in dtEmployees.Rows)
             {
                 string empName = row["Name"].ToString();
                 int empId = Convert.ToInt32(row["Id"]);
 
-                // יצירת ראשי תיבות לשם העמודה כדי לחסוך מקום (למשל "Avi Cohen" -> "Avi C.")
+                // יצירת ראשי תיבות לשם העמודה כדי לחסוך מקום היה לי מאוד צפוף בעין "Avi Cohen" ל "Avi C."
                 string shortName = empName;
                 var parts = empName.Split(' ');
                 if (parts.Length > 1) shortName = $"{parts[0]} {parts[1][0]}.";
 
+                //מזהה פנימי לעמודה "col_6"
                 string colName = "col_" + empId;
                 dgvSynergy.Columns.Add(colName, shortName);
 
                 // הגדרות עיצוב לעמודות הנתונים
                 dgvSynergy.Columns[colName].Width = 70; // רוחב קבוע ונוח
-                dgvSynergy.Columns[colName].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                dgvSynergy.Columns[colName].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;//סנטר
             }
 
-            // 5. מילוי השורות
+            // מילוי השורות
             foreach (DataRow rowA in dtEmployees.Rows)
             {
                 int idA = Convert.ToInt32(rowA["Id"]);
                 string nameA = rowA["Name"].ToString();
 
-                int rowIndex = dgvSynergy.Rows.Add();
-                dgvSynergy.Rows[rowIndex].Cells[0].Value = nameA;
-                dgvSynergy.Rows[rowIndex].Tag = idA;
-                dgvSynergy.Rows[rowIndex].Height = 35; // שורה גבוהה יותר
 
+                int rowIndex = dgvSynergy.Rows.Add();
+                dgvSynergy.Rows[rowIndex].Cells[0].Value = nameA;//השם 
+                dgvSynergy.Rows[rowIndex].Tag = idA;//מזהה מוחבא בtag
+                dgvSynergy.Rows[rowIndex].Height = 35; 
+
+                //עובד מול עובד ציון שלהם
                 for (int i = 0; i < dtEmployees.Rows.Count; i++)
                 {
                     DataRow rowB = dtEmployees.Rows[i];
                     int idB = Convert.ToInt32(rowB["Id"]);
-                    int colIndex = i + 1;
+                    int colIndex = i + 1;//+1 MainColumn
 
+                    //אותו אדם
                     if (idA == idB)
                     {
                         dgvSynergy.Rows[rowIndex].Cells[colIndex].Style.BackColor = System.Drawing.Color.Gray;
@@ -353,82 +377,88 @@ namespace SafeShiftAI_GUI
                     }
                     else
                     {
+                        //הכנת המפתח למילון
                         string key1 = $"{idA}-{idB}";
                         string key2 = $"{idB}-{idA}";
                         int score = 0;
 
+                        //האם המפתח קיים אם כן score מקבל אותו
                         if (synergyDict.ContainsKey(key1)) score = synergyDict[key1];
                         else if (synergyDict.ContainsKey(key2)) score = synergyDict[key2];
 
-                        // צביעת תאים לפי הציון (ויזואליזציה יפה!)
+                        //צביעה
                         dgvSynergy.Rows[rowIndex].Cells[colIndex].Value = score;
                         if (score > 0) dgvSynergy.Rows[rowIndex].Cells[colIndex].Style.BackColor = System.Drawing.Color.FromArgb(200, 255, 200); // ירוק בהיר
                         if (score < 0) dgvSynergy.Rows[rowIndex].Cells[colIndex].Style.BackColor = System.Drawing.Color.FromArgb(255, 200, 200); // אדום בהיר
                     }
                 }
             }
+            //מניעת מיון במסך
+            foreach (DataGridViewColumn column in dgvSynergy.Columns)
+            {
+                column.SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
         }
-        // פונקציה למילוי ה-DataGridView של הלוח
+        // DataGridView מילוי
         private void DisplaySchedule(List<ShiftDisplayModel> scheduleList)
         {
-            dgvSchedule.DataSource = null;
+            dgvSchedule.DataSource = null;//מחיקה למען עדכון הנתונים
             dgvSchedule.DataSource = scheduleList;
 
-            // הגדרת כותרות בעברית
+            //  כותרות בעברית
             if (dgvSchedule.Columns.Count > 0)
             {
                 dgvSchedule.Columns["Day"].HeaderText = "יום";
                 dgvSchedule.Columns["Shift"].HeaderText = "משמרת";
-                dgvSchedule.Columns["ManagerID"].HeaderText = "מנהל (ת.ז)";
-                dgvSchedule.Columns["DoctorID"].HeaderText = "רופא (ת.ז)";
-                dgvSchedule.Columns["DriverID"].HeaderText = "נהג (ת.ז)";
+                dgvSchedule.Columns["ManagerID"].HeaderText = "מנהל ת.ז";
+                dgvSchedule.Columns["DoctorID"].HeaderText = "רופא ת.ז";
+                dgvSchedule.Columns["DriverID"].HeaderText = "נהג ת.ז";
 
-                // עיצוב קטן
+                // עיצוב 
                 dgvSchedule.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             }
         }
 
-        // הוסף את זה בתוך Form1.cs
-
+        
+        //עיצוב של החלון
         private void ApplyModernDesign()
         {
-            // 1. הגדרת גודל חלון התחלתי גדול
-            // === שינוי: במקום מסך מלא, גודל קבוע ונוח ===
-            this.WindowState = FormWindowState.Normal; // מצב רגיל (לא מקסימלי)
-            this.Size = new System.Drawing.Size(1280, 800); // גודל רחב אבל לא תופס את כל המסך
-            this.StartPosition = FormStartPosition.CenterScreen; // ייפתח באמצע המסך
-            this.FormBorderStyle = FormBorderStyle.Sizable; // מאפשר לך להגדיל/להקטין ידנית אם תרצה
+            //גודל קבוע ונוח
+            this.WindowState = FormWindowState.Normal;
+            this.Size = new System.Drawing.Size(1280, 800); 
+            this.StartPosition = FormStartPosition.CenterScreen; 
+            this.FormBorderStyle = FormBorderStyle.Sizable; 
 
             this.BackColor = System.Drawing.Color.FromArgb(245, 247, 250);
             this.Font = new System.Drawing.Font("Segoe UI", 10, System.Drawing.FontStyle.Regular);
 
-            // 2. עיצוב כפתורים
+            // עיצוב כפתורים
             StyleButton(btnAddEmployee);
             StyleButton(btnSaveSickDays);
             StyleButton(btnRunAlgorithm);
 
-            Control[] matches = this.Controls.Find("btnSaveSynergy", true);
+            Control[] matches = this.Controls.Find("btnSaveSynergy", true);//חיפוש הכפתור באמצעות רקורסיה
             if (matches.Length > 0 && matches[0] is Button) StyleButton((Button)matches[0]);
 
-            // 3. עיצוב טבלאות
+            // עיצוב טבלאות
             StyleGrid(dgvSchedule);
-            StyleGrid(dgvSynergy); // הטבלה הזו קיבלה טיפול מיוחד ב-LoadSynergyToGrid
+            StyleGrid(dgvSynergy); 
             if (dgvEmployees != null) StyleGrid(dgvEmployees);
 
-            // 4. עיצוב תווית סטטוס
+            // עיצוב תווית סטטוס
             if (lblStatus != null)
             {
                 lblStatus.ForeColor = System.Drawing.Color.FromArgb(51, 102, 255);
                 lblStatus.Font = new System.Drawing.Font("Segoe UI", 14, System.Drawing.FontStyle.Bold);
             }
 
-            // 5. שיפור עיצוב הגרף (Spline = קו מעוגל)
+            // שיפור עיצוב הגרף של התקדמות האלוגריטם הגנטי
             if (chartFitness != null)
             {
                 chartFitness.BackColor = System.Drawing.Color.White;
                 chartFitness.ChartAreas[0].BackColor = System.Drawing.Color.White;
 
-                // ביטול קווי רשת צפופים
+                // שינוי הקווים של הטבלה
                 chartFitness.ChartAreas[0].AxisX.MajorGrid.LineColor = System.Drawing.Color.LightGray;
                 chartFitness.ChartAreas[0].AxisY.MajorGrid.LineColor = System.Drawing.Color.LightGray;
                 chartFitness.ChartAreas[0].AxisX.MajorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dash;
@@ -447,13 +477,13 @@ namespace SafeShiftAI_GUI
         private void StyleButton(Button btn)
         {
             if (btn == null) return;
-            btn.BackColor = System.Drawing.Color.FromArgb(51, 102, 255); // כחול רויאל
+            btn.BackColor = System.Drawing.Color.FromArgb(51, 102, 255); 
             btn.ForeColor = System.Drawing.Color.White;
             btn.FlatStyle = FlatStyle.Flat;
             btn.FlatAppearance.BorderSize = 0;
             btn.Cursor = Cursors.Hand;
             btn.Font = new System.Drawing.Font("Segoe UI", 10, System.Drawing.FontStyle.Bold);
-            btn.Height = 40; // כפתור גבוה ונוח יותר
+            btn.Height = 40; 
         }
 
         // פונקציית עזר לעיצוב טבלה
@@ -464,7 +494,7 @@ namespace SafeShiftAI_GUI
             grid.BackgroundColor = System.Drawing.Color.White;
             grid.BorderStyle = BorderStyle.None;
             grid.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
-            grid.EnableHeadersVisualStyles = false;
+            grid.EnableHeadersVisualStyles = false;//כדי לאפשר עיצוב של הטבלה
 
             // כותרת הטבלה
             grid.ColumnHeadersDefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(51, 102, 255);
@@ -484,91 +514,68 @@ namespace SafeShiftAI_GUI
             grid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
         }
 
-        private void StyleLabel(Label lbl, bool isHeader)
-        {
-            if (lbl == null) return;
-            if (isHeader)
-            {
-                lbl.ForeColor = System.Drawing.Color.FromArgb(51, 102, 255);
-                lbl.Font = new System.Drawing.Font("Segoe UI", 12, System.Drawing.FontStyle.Bold);
-            }
-        }
 
-        private void cmbRole_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtSeniority_ValueChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void dgvSynergy_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
-
-        private void tabPage3_Click(object sender, EventArgs e)
-        {
-
-        }
-
+        //כפתור שמירה סינגריה 
         private void btnSaveSynergy_Click(object sender, EventArgs e)
         {
-            int count = 0;
+            int count = 0;//כמות שמירות
 
             // רצים על כל השורות
             foreach (DataGridViewRow row in dgvSynergy.Rows)
             {
-                if (row.Tag == null) continue;
-                int id1 = (int)row.Tag; // שליפת ה-ID מהשורה
-
-                // רצים על כל העמודות (מדלגים על עמודה 0 שהיא השמות)
-                for (int i = 1; i < dgvSynergy.Columns.Count; i++)
+               
+                if (row.Tag != null)
                 {
-                    // שליפת ה-ID של העמודה (השם שלה הוא col_5 למשל)
-                    string colName = dgvSynergy.Columns[i].Name;
-                    int id2 = int.Parse(colName.Replace("col_", ""));
+                    int id1 = (int)row.Tag; //שורה ID 
 
-                    // אם זה האלכסון או אין ערך - מדלגים
-                    var cellValue = row.Cells[i].Value;
-                    if (cellValue == null || cellValue.ToString() == "X") continue;
-
-                    if (int.TryParse(cellValue.ToString(), out int score))
+                    // עוברים על כל העמודות
+                    for (int i = 1; i < dgvSynergy.Columns.Count; i++)
                     {
-                        // שמירה ב-DB (רק פעם אחת לכל זוג כדי לחסוך, או לדרוס הכל)
-                        // כאן נשמור הכל וזה בסדר גמור
-                        dbHelper.SaveSynergy(id1, id2, score);
-                        count++;
+                       
+                        string colName = dgvSynergy.Columns[i].Name; //col_5 למשל
+                        int id2 = int.Parse(colName.Replace("col_", ""));
+
+                        var cellValue = row.Cells[i].Value;//הציון
+
+                        if (cellValue != null && cellValue.ToString() != "X")
+                        {
+                            // המרה
+                            if (int.TryParse(cellValue.ToString(), out int score))
+                            {
+                                // שמירה במסד הנתונים 
+                                dbHelper.SaveSynergy(id1, id2, score);
+                                count++;
+                            }
+                        }
                     }
                 }
             }
 
-            MessageBox.Show("הנתונים נשמרו בהצלחה!");
+            MessageBox.Show("הנתונים נשמרו בהצלחה");
         }
 
+        //פונקציה סינכרון ימי מחלה
         private void cmbSickEmployee_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // הגנה מפני קריסה כשהטופס רק עולה
+            // מניעת קריסה כשהטופס רק עולה
             if (cmbSickEmployee.SelectedValue == null) return;
 
-            // ניסיון להמיר את הערך ל-ID
+            
             if (int.TryParse(cmbSickEmployee.SelectedValue.ToString(), out int empId))
             {
-                // 1. איפוס כל ה-V הקיימים
+                // V איפוס
                 for (int i = 0; i < clbSickDays.Items.Count; i++)
                 {
                     clbSickDays.SetItemChecked(i, false);
                 }
 
-                // 2. הבאת הימים מה-SQL
+                //  טעינה של הימים של העובד לפי מסד הנתונים
                 List<int> sickDays = dbHelper.GetSickDaysForEmployee(empId);
 
-                // 3. סימון ה-V במקומות הנכונים
+                
                 foreach (int day in sickDays)
                 {
-                    // בדיקת גבולות (למנוע קריסה אם היום הוא 30 והמערך קצר יותר)
+                  
                     if (day >= 0 && day < clbSickDays.Items.Count)
                     {
                         clbSickDays.SetItemChecked(day, true);
@@ -592,38 +599,39 @@ namespace SafeShiftAI_GUI
 
         }
 
-
+        //כפתור מחיקת העובד
         private void btnDeleteEmployee_Click(object sender, EventArgs e)
         {
-            // בדיקה האם המשתמש באמת בחר שורה בטבלת העובדים
+            //  האם המשתמש בחר שורה בטבלת העובדים
             if (dgvEmployees.SelectedRows.Count > 0)
             {
-                // שליפת ה-ID של העובד מהשורה שנבחרה
+                //id
                 int selectedEmpId = Convert.ToInt32(dgvEmployees.SelectedRows[0].Cells["Id"].Value);
                 string empName = dgvEmployees.SelectedRows[0].Cells["Name"].Value.ToString();
 
-                // הקפצת הודעת אזהרה (חשוב מאוד במחיקות!)
+                // הודעת אזהרה
                 DialogResult dialogResult = MessageBox.Show(
                     $"האם אתה בטוח שברצונך למחוק את העובד '{empName}'?\nפעולה זו תמחק גם את ימי המחלה ונתוני ההתאמה שלו.",
                     "אישור מחיקה",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Warning);
 
+                //כן
                 if (dialogResult == DialogResult.Yes)
                 {
                     try
                     {
-                        // קריאה לפונקציית המחיקה
+                        // פונקציית המחיקה
                         dbHelper.DeleteEmployee(selectedEmpId);
 
                         // רענון טבלת העובדים במסך
                         LoadEmployeesList();
                         
 
-                        // רענון מטריצת ההתאמה (כדי שהעובד ייעלם גם משם)
+                        // רענון מטריצת ההתאמה 
                         LoadSynergyToGrid();
 
-                        MessageBox.Show("העובד נמחק בהצלחה!", "נמחק", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show("העובד נמחק בהצלחה", "נמחק", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     catch (Exception ex)
                     {
@@ -633,42 +641,43 @@ namespace SafeShiftAI_GUI
             }
             else
             {
-                MessageBox.Show("נא לבחור עובד מהטבלה כדי למחוק אותו.", "שגיאה", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("נא לבחור עובד מהטבלה כדי למחוק אותו", "שגיאה", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
+        //Backtracking כפתור תהליך רקע
         private async void btnRunBacktracking_Click(object sender, EventArgs e)
         {
             btnRunBacktracking.Enabled = false;
-            lblStatusBacktracking.Text = "מריץ אלגוריתם נאיבי... נא להמתין (זה ייקח כמה שניות)";
+            lblStatusBacktracking.Text = "מריץ אלגוריתם נאיבי... נא להמתין זה ייקח כמה שניות";
             lblStatusBacktracking.ForeColor = System.Drawing.Color.Orange;
             dgvBacktrackingSchedule.DataSource = null; // ניקוי הטבלה
 
             try
             {
-                // 1. טעינת הנתונים (משתמשים במחלקה הקיימת שלך!)
+                // טעינת הנתונים    
                 Data_Layer currentData = new Data_Layer();
-                if (currentData.Employees.Count == 0) throw new Exception("אין עובדים במערכת!");
+                if (currentData.Employees.Count == 0) throw new Exception("אין עובדים במערכת");
 
-                // 2. יצירת הפותר שלנו
+                //  יצירת הפותר 
                 BacktrackingSolver solver = new BacktrackingSolver(currentData);
 
-                // 3. הרצה ברקע
+                //  הרצה ברקע
                 bool success = await Task.Run(() => solver.Solve());
 
-                // 4. הצגת התוצאות (עם פסיק למספרים גדולים)
+                
                 if (success)
                 {
-                    lblStatusBacktracking.Text = $"הצליח! (נדיר מאוד). איטרציות: {solver.IterationsCount:N0}";
+                    lblStatusBacktracking.Text = $"הצליח (מצב נדיר) איטרציות: {solver.IterationsCount:N0}";
                     lblStatusBacktracking.ForeColor = System.Drawing.Color.Green;
                 }
                 else
                 {
-                    lblStatusBacktracking.Text = $"האלגוריתם נתקע ונעצר! הגיע עד יום: {solver.MaxDayReached + 1} | איטרציות: {solver.IterationsCount:N0}";
+                    lblStatusBacktracking.Text = $"האלגוריתם נתקע ונעצר הגיע עד יום: {solver.MaxDayReached + 1} | איטרציות: {solver.IterationsCount:N0}";
                     lblStatusBacktracking.ForeColor = System.Drawing.Color.Red;
                 }
 
-                // 5. המרת המערך לטבלה
+                // המרה לטבלה
                 int[,,] bestMatrix = solver.GetBestPartialSchedule();
                 DisplayBacktrackingMatrix(bestMatrix, currentData.Employees);
             }
@@ -682,11 +691,11 @@ namespace SafeShiftAI_GUI
             }
         }
 
-        // פונקציית עזר להצגת הטבלה (שים אותה מתחת לכפתור ב-Form1)
+        // פוקציה להצגת הטבלה של הפתרון Backtracking
         private void DisplayBacktrackingMatrix(int[,,] matrix, List<Employee> employees)
         {
             List<ShiftDisplayModel> listForGrid = new List<ShiftDisplayModel>();
-            string[] shiftNames = { "Morning", "Evening", "Night" };
+            string[] shiftNames = { "Morning", "Evening", "Night" };//תרגום אינדקס
 
             for (int day = 0; day < 30; day++)
             {
@@ -694,21 +703,21 @@ namespace SafeShiftAI_GUI
                 {
                     ShiftDisplayModel row = new ShiftDisplayModel();
 
-                    // התיקון הראשון: הוספת .ToString()
+                    
                     row.Day = (day + 1).ToString();
                     row.Shift = shiftNames[shift];
 
-                    // התיקון השני: שימוש בשמות המאפיינים הנכונים (ID במקום Name)
-
-                    // תפקיד 0 (מנהל/MGR)
+                    
+                    //??-אם הid נמצא במערך אבל העובד לא קיים ברשימה
+                    // MGR
                     int mgrId = matrix[day, shift, 0];
                     row.ManagerID = mgrId != -1 ? employees.FirstOrDefault(e => e.ID == mgrId)?.Name ?? "ריק" : "ריק";
 
-                    // תפקיד 1 (רופא/MED)
+                    // MED
                     int medId = matrix[day, shift, 1];
                     row.DoctorID = medId != -1 ? employees.FirstOrDefault(e => e.ID == medId)?.Name ?? "ריק" : "ריק";
 
-                    // תפקיד 2 (נהג/DRV)
+                    // DRV
                     int drvId = matrix[day, shift, 2];
                     row.DriverID = drvId != -1 ? employees.FirstOrDefault(e => e.ID == drvId)?.Name ?? "ריק" : "ריק";
 
@@ -718,7 +727,7 @@ namespace SafeShiftAI_GUI
 
             dgvBacktrackingSchedule.DataSource = listForGrid;
 
-            // עיצוב כותרות הטבלה החדשה (עדכנתי גם פה את השמות ל-ID)
+           
             if (dgvBacktrackingSchedule.Columns.Count > 0)
             {
                 if (dgvBacktrackingSchedule.Columns.Contains("Day")) dgvBacktrackingSchedule.Columns["Day"].HeaderText = "יום";
@@ -727,7 +736,7 @@ namespace SafeShiftAI_GUI
                 if (dgvBacktrackingSchedule.Columns.Contains("DoctorID")) dgvBacktrackingSchedule.Columns["DoctorID"].HeaderText = "רופא";
                 if (dgvBacktrackingSchedule.Columns.Contains("DriverID")) dgvBacktrackingSchedule.Columns["DriverID"].HeaderText = "נהג";
 
-                // בונוס: הפעלת פונקציית העיצוב (תוריד את ה-// אם יש לך שגיאה פה)
+                //פונקציית העיצוב
                 StyleGrid(dgvBacktrackingSchedule);
             }
         }

@@ -68,7 +68,7 @@ namespace SafeShiftAI_GUI
             }
         }
 
-        // פונקציית ההפעלה עוטפת 
+        // פונקציית ההפעלה -מעטפת 
         public bool Solve()
         {
             IterationsCount = 0;
@@ -149,7 +149,7 @@ namespace SafeShiftAI_GUI
             {
                 return false;
             }
-            /////////////////////////////////////////////////////////////////////////////////
+            // =========================================================
             //  אילוץ עומס חודשי (הקריסה הגדולה!!): מקסימום 9 משמרות בחודש לעובד
             int monthlyShifts = 0;
             for (int d = 0; d < 30; d++)
@@ -163,7 +163,7 @@ namespace SafeShiftAI_GUI
                 }
             }
             if (monthlyShifts >= MAX_MONTHLY_SHIFTS) return false; // עבר את המכסה החודשית - פסול!
-            /////////////////////////////////////////////////////////////////////////////////////
+           // =========================================================
 
             // תפקיד מתאים
             if (roleIndex == 0 && emp.Role != Employee.EmployeeRole.MGR) return false;

@@ -116,10 +116,10 @@ namespace SafeShiftAI_GUI
                     int id = Convert.ToInt32(row["Id"]);
                     string name = row["Name"].ToString();
 
-                    // --- קריאת תעודת זהות ---
+                    
                     // אנחנו בודקים אם זה NULL וממירים ל-String
                     string realId = row["RealID"] != DBNull.Value ? row["RealID"].ToString() : "";
-                    // -----------------------
+                    
 
                     string roleStr = row["Role"].ToString().Trim().ToLower();
 
@@ -132,7 +132,7 @@ namespace SafeShiftAI_GUI
                     else if (roleStr == "doctor") myRole = Employee.EmployeeRole.MED;
                     else if (roleStr == "driver") myRole = Employee.EmployeeRole.DRV;
 
-                    // שימוש בבנאי החדש שלך (עם realId)
+                    // שימוש בבנאי החדש שלך עם realId
                     Employee emp = new Employee(id, realId, name, myRole, seniority);
                     Employees.Add(emp);
 
@@ -160,7 +160,7 @@ namespace SafeShiftAI_GUI
                 }
             }
 
-            // --- טעינת ימי מחלה ---
+            //  טעינת ימי מחלה 
             var sickDaysList = db.LoadSickDays();
             foreach (var record in sickDaysList)
             {

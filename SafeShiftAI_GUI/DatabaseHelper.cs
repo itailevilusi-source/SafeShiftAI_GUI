@@ -131,7 +131,7 @@ namespace SafeShiftAI_GUI
             return list;//החזרת הרשימה שבנינו
         }
 
-        // --- ניהול סינרגיה ---
+        //ניהול סינרגיה 
         public void SaveSynergy(int id1, int id2, int score)
         {
             using (SqlConnection conn = new SqlConnection(connectionString))
@@ -229,21 +229,21 @@ namespace SafeShiftAI_GUI
                 SqlCommand cmd = new SqlCommand();
                 cmd.Connection = conn;
                 cmd.Parameters.AddWithValue("@id", empId); // מכניסים את הפרמטר רק פעם אחת
-                
+
 
                 try
                 {
                     conn.Open();
 
-                    // 1. מחיקת העובד ממטריצת ההתאמה
+                    //  מחיקת העובד ממטריצת ההתאמה
                     cmd.CommandText = "DELETE FROM Synergy WHERE EmpId1 = @id OR EmpId2 = @id";
                     cmd.ExecuteNonQuery();
 
-                    // 2. מחיקת ימי המחלה של העובד
+                    //  מחיקת ימי המחלה של העובד
                     cmd.CommandText = "DELETE FROM SickDays WHERE EmployeeId = @id";
                     cmd.ExecuteNonQuery();
 
-                    // 3. מחיקת העובד עצמו מטבלת העובדים
+                    //  מחיקת העובד עצמו מטבלת העובדים
                     cmd.CommandText = "DELETE FROM Employees WHERE Id = @id";
                     cmd.ExecuteNonQuery();
                 }
@@ -255,5 +255,30 @@ namespace SafeShiftAI_GUI
             }
         }
 
+        // פונקציה לניקוי כל ימי המחלה של עובד לפני שמירה מחדש
+        public void ClearSickDaysForEmployee(int employeeId)
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+
+                string query = "DELETE FROM SickDays WHERE EmployeeId = @EmployeeId";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@EmployeeId", employeeId);
+                    try
+                    {
+                        conn.Open();
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
+                }
+            }
+
+        }
     }
-    }
+}

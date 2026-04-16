@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend4 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.lblStatus = new System.Windows.Forms.Label();
             this.lblFitness = new System.Windows.Forms.Label();
@@ -86,11 +86,11 @@
             this.tabPage2.Controls.Add(this.label1);
             this.tabPage2.Controls.Add(this.dgvSchedule);
             this.tabPage2.Controls.Add(this.btnRunAlgorithm);
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
-            this.tabPage2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabPage2.Location = new System.Drawing.Point(4, 25);
+            this.tabPage2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.tabPage2.Size = new System.Drawing.Size(1130, 715);
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tabPage2.Size = new System.Drawing.Size(1509, 883);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "תוצאות ושיבוץ";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -99,77 +99,75 @@
             // lblStatus
             // 
             this.lblStatus.AutoSize = true;
-            this.lblStatus.Location = new System.Drawing.Point(566, 23);
-            this.lblStatus.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblStatus.Location = new System.Drawing.Point(755, 28);
             this.lblStatus.Name = "lblStatus";
-            this.lblStatus.Size = new System.Drawing.Size(0, 13);
+            this.lblStatus.Size = new System.Drawing.Size(0, 16);
             this.lblStatus.TabIndex = 11;
             this.lblStatus.Click += new System.EventHandler(this.lblStatus_Click);
             // 
             // lblFitness
             // 
             this.lblFitness.AutoSize = true;
-            this.lblFitness.Location = new System.Drawing.Point(903, 32);
-            this.lblFitness.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblFitness.Location = new System.Drawing.Point(1204, 39);
             this.lblFitness.Name = "lblFitness";
-            this.lblFitness.Size = new System.Drawing.Size(36, 13);
+            this.lblFitness.Size = new System.Drawing.Size(37, 16);
             this.lblFitness.TabIndex = 10;
             this.lblFitness.Text = "ניקוד";
             // 
             // chartFitness
             // 
-            chartArea2.Name = "ChartArea1";
-            this.chartFitness.ChartAreas.Add(chartArea2);
-            legend2.Name = "Legend1";
-            this.chartFitness.Legends.Add(legend2);
-            this.chartFitness.Location = new System.Drawing.Point(733, 84);
-            this.chartFitness.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            chartArea4.Name = "ChartArea1";
+            this.chartFitness.ChartAreas.Add(chartArea4);
+            legend4.Name = "Legend1";
+            this.chartFitness.Legends.Add(legend4);
+            this.chartFitness.Location = new System.Drawing.Point(977, 103);
+            this.chartFitness.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.chartFitness.Name = "chartFitness";
-            series2.ChartArea = "ChartArea1";
-            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
-            series2.Legend = "Legend1";
-            series2.Name = "Series1";
-            this.chartFitness.Series.Add(series2);
-            this.chartFitness.Size = new System.Drawing.Size(310, 420);
+            series4.ChartArea = "ChartArea1";
+            series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
+            series4.Legend = "Legend1";
+            series4.Name = "Series1";
+            this.chartFitness.Series.Add(series4);
+            this.chartFitness.Size = new System.Drawing.Size(413, 517);
             this.chartFitness.TabIndex = 9;
             this.chartFitness.Text = "chart1";
             // 
             // pbStatus
             // 
-            this.pbStatus.Location = new System.Drawing.Point(281, 38);
-            this.pbStatus.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.pbStatus.Location = new System.Drawing.Point(375, 47);
+            this.pbStatus.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.pbStatus.Name = "pbStatus";
-            this.pbStatus.Size = new System.Drawing.Size(442, 41);
+            this.pbStatus.Size = new System.Drawing.Size(589, 50);
             this.pbStatus.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
             this.pbStatus.TabIndex = 8;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(-5, -38);
-            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label1.Location = new System.Drawing.Point(-7, -47);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(35, 13);
+            this.label1.Size = new System.Drawing.Size(44, 16);
             this.label1.TabIndex = 7;
             this.label1.Text = "label1";
             // 
             // dgvSchedule
             // 
             this.dgvSchedule.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvSchedule.Location = new System.Drawing.Point(4, 84);
-            this.dgvSchedule.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.dgvSchedule.Location = new System.Drawing.Point(5, 103);
+            this.dgvSchedule.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.dgvSchedule.Name = "dgvSchedule";
+            this.dgvSchedule.ReadOnly = true;
             this.dgvSchedule.RowHeadersWidth = 51;
             this.dgvSchedule.RowTemplate.Height = 24;
-            this.dgvSchedule.Size = new System.Drawing.Size(720, 408);
+            this.dgvSchedule.Size = new System.Drawing.Size(960, 502);
             this.dgvSchedule.TabIndex = 6;
             // 
             // btnRunAlgorithm
             // 
-            this.btnRunAlgorithm.Location = new System.Drawing.Point(27, 10);
-            this.btnRunAlgorithm.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnRunAlgorithm.Location = new System.Drawing.Point(36, 12);
+            this.btnRunAlgorithm.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnRunAlgorithm.Name = "btnRunAlgorithm";
-            this.btnRunAlgorithm.Size = new System.Drawing.Size(234, 58);
+            this.btnRunAlgorithm.Size = new System.Drawing.Size(312, 71);
             this.btnRunAlgorithm.TabIndex = 5;
             this.btnRunAlgorithm.Text = "הפעל אופטימיזציה";
             this.btnRunAlgorithm.UseVisualStyleBackColor = true;
@@ -189,11 +187,11 @@
             this.tabPage1.Controls.Add(this.label3);
             this.tabPage1.Controls.Add(this.txtName);
             this.tabPage1.Controls.Add(this.label2);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabPage1.Location = new System.Drawing.Point(4, 25);
+            this.tabPage1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.tabPage1.Size = new System.Drawing.Size(1130, 715);
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tabPage1.Size = new System.Drawing.Size(1509, 883);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "ניהול עובדים";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -202,10 +200,10 @@
             // btnDeleteEmployee
             // 
             this.btnDeleteEmployee.BackColor = System.Drawing.Color.IndianRed;
-            this.btnDeleteEmployee.Location = new System.Drawing.Point(82, 463);
-            this.btnDeleteEmployee.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnDeleteEmployee.Location = new System.Drawing.Point(109, 570);
+            this.btnDeleteEmployee.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnDeleteEmployee.Name = "btnDeleteEmployee";
-            this.btnDeleteEmployee.Size = new System.Drawing.Size(226, 71);
+            this.btnDeleteEmployee.Size = new System.Drawing.Size(301, 87);
             this.btnDeleteEmployee.TabIndex = 11;
             this.btnDeleteEmployee.Text = "מחק עובד נבחר";
             this.btnDeleteEmployee.UseVisualStyleBackColor = false;
@@ -216,21 +214,21 @@
             this.groupBox1.Controls.Add(this.btnSaveSickDays);
             this.groupBox1.Controls.Add(this.clbSickDays);
             this.groupBox1.Controls.Add(this.cmbSickEmployee);
-            this.groupBox1.Location = new System.Drawing.Point(357, 25);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox1.Location = new System.Drawing.Point(476, 31);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.groupBox1.Size = new System.Drawing.Size(231, 444);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBox1.Size = new System.Drawing.Size(308, 546);
             this.groupBox1.TabIndex = 10;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "ניהול ימי מחלה";
             // 
             // btnSaveSickDays
             // 
-            this.btnSaveSickDays.Location = new System.Drawing.Point(46, 304);
-            this.btnSaveSickDays.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnSaveSickDays.Location = new System.Drawing.Point(61, 374);
+            this.btnSaveSickDays.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnSaveSickDays.Name = "btnSaveSickDays";
-            this.btnSaveSickDays.Size = new System.Drawing.Size(136, 60);
+            this.btnSaveSickDays.Size = new System.Drawing.Size(181, 74);
             this.btnSaveSickDays.TabIndex = 0;
             this.btnSaveSickDays.Text = "שמור ימי מחלה";
             this.btnSaveSickDays.UseVisualStyleBackColor = true;
@@ -239,77 +237,75 @@
             // clbSickDays
             // 
             this.clbSickDays.FormattingEnabled = true;
-            this.clbSickDays.Location = new System.Drawing.Point(28, 41);
-            this.clbSickDays.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.clbSickDays.Location = new System.Drawing.Point(37, 50);
+            this.clbSickDays.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.clbSickDays.Name = "clbSickDays";
-            this.clbSickDays.Size = new System.Drawing.Size(163, 244);
+            this.clbSickDays.Size = new System.Drawing.Size(216, 293);
             this.clbSickDays.TabIndex = 1;
             // 
             // cmbSickEmployee
             // 
             this.cmbSickEmployee.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbSickEmployee.FormattingEnabled = true;
-            this.cmbSickEmployee.Location = new System.Drawing.Point(28, 17);
-            this.cmbSickEmployee.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.cmbSickEmployee.Location = new System.Drawing.Point(37, 21);
+            this.cmbSickEmployee.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.cmbSickEmployee.Name = "cmbSickEmployee";
-            this.cmbSickEmployee.Size = new System.Drawing.Size(188, 21);
+            this.cmbSickEmployee.Size = new System.Drawing.Size(249, 24);
             this.cmbSickEmployee.TabIndex = 0;
             this.cmbSickEmployee.SelectedIndexChanged += new System.EventHandler(this.cmbSickEmployee_SelectedIndexChanged);
             // 
             // txtRealID
             // 
-            this.txtRealID.Location = new System.Drawing.Point(111, 274);
-            this.txtRealID.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.txtRealID.Location = new System.Drawing.Point(148, 337);
+            this.txtRealID.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.txtRealID.Name = "txtRealID";
-            this.txtRealID.Size = new System.Drawing.Size(162, 20);
+            this.txtRealID.Size = new System.Drawing.Size(215, 22);
             this.txtRealID.TabIndex = 9;
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(289, 274);
-            this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label5.Location = new System.Drawing.Point(385, 337);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(67, 13);
+            this.label5.Size = new System.Drawing.Size(76, 16);
             this.label5.TabIndex = 8;
             this.label5.Text = "תעודת זהות";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(302, 242);
-            this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label4.Location = new System.Drawing.Point(403, 298);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(26, 13);
+            this.label4.Size = new System.Drawing.Size(28, 16);
             this.label4.TabIndex = 7;
             this.label4.Text = "ותק";
             // 
             // txtSeniority
             // 
-            this.txtSeniority.Location = new System.Drawing.Point(111, 237);
-            this.txtSeniority.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.txtSeniority.Location = new System.Drawing.Point(148, 292);
+            this.txtSeniority.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.txtSeniority.Name = "txtSeniority";
-            this.txtSeniority.Size = new System.Drawing.Size(161, 20);
+            this.txtSeniority.Size = new System.Drawing.Size(215, 22);
             this.txtSeniority.TabIndex = 6;
-            this.txtSeniority.ValueChanged += new System.EventHandler(this.txtSeniority_ValueChanged);
             // 
             // dgvEmployees
             // 
             this.dgvEmployees.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvEmployees.Location = new System.Drawing.Point(589, 42);
-            this.dgvEmployees.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.dgvEmployees.Location = new System.Drawing.Point(785, 52);
+            this.dgvEmployees.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.dgvEmployees.Name = "dgvEmployees";
+            this.dgvEmployees.ReadOnly = true;
             this.dgvEmployees.RowHeadersWidth = 51;
             this.dgvEmployees.RowTemplate.Height = 24;
-            this.dgvEmployees.Size = new System.Drawing.Size(441, 566);
+            this.dgvEmployees.Size = new System.Drawing.Size(588, 697);
             this.dgvEmployees.TabIndex = 5;
             // 
             // btnAddEmployee
             // 
-            this.btnAddEmployee.Location = new System.Drawing.Point(82, 339);
-            this.btnAddEmployee.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnAddEmployee.Location = new System.Drawing.Point(109, 417);
+            this.btnAddEmployee.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnAddEmployee.Name = "btnAddEmployee";
-            this.btnAddEmployee.Size = new System.Drawing.Size(226, 67);
+            this.btnAddEmployee.Size = new System.Drawing.Size(301, 82);
             this.btnAddEmployee.TabIndex = 4;
             this.btnAddEmployee.Text = "הוסף עובד";
             this.btnAddEmployee.UseVisualStyleBackColor = true;
@@ -322,38 +318,35 @@
             "Manager",
             "Doctor",
             "Driver"});
-            this.cmbRole.Location = new System.Drawing.Point(111, 189);
-            this.cmbRole.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.cmbRole.Location = new System.Drawing.Point(148, 233);
+            this.cmbRole.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.cmbRole.Name = "cmbRole";
-            this.cmbRole.Size = new System.Drawing.Size(162, 21);
+            this.cmbRole.Size = new System.Drawing.Size(215, 24);
             this.cmbRole.TabIndex = 3;
-            this.cmbRole.SelectedIndexChanged += new System.EventHandler(this.cmbRole_SelectedIndexChanged);
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(302, 192);
-            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label3.Location = new System.Drawing.Point(403, 236);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(40, 13);
+            this.label3.Size = new System.Drawing.Size(43, 16);
             this.label3.TabIndex = 2;
             this.label3.Text = "תפקיד";
             // 
             // txtName
             // 
-            this.txtName.Location = new System.Drawing.Point(111, 152);
-            this.txtName.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.txtName.Location = new System.Drawing.Point(148, 187);
+            this.txtName.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.txtName.Name = "txtName";
-            this.txtName.Size = new System.Drawing.Size(162, 20);
+            this.txtName.Size = new System.Drawing.Size(215, 22);
             this.txtName.TabIndex = 1;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(286, 152);
-            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label2.Location = new System.Drawing.Point(381, 187);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(59, 13);
+            this.label2.Size = new System.Drawing.Size(64, 16);
             this.label2.TabIndex = 0;
             this.label2.Text = "שם העובד";
             // 
@@ -363,33 +356,32 @@
             this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Controls.Add(this.tabPage4);
-            this.tabControl1.Location = new System.Drawing.Point(0, 10);
-            this.tabControl1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabControl1.Location = new System.Drawing.Point(0, 12);
+            this.tabControl1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(1138, 741);
+            this.tabControl1.Size = new System.Drawing.Size(1517, 912);
             this.tabControl1.TabIndex = 5;
             // 
             // tabPage3
             // 
             this.tabPage3.Controls.Add(this.btnSaveSynergy);
             this.tabPage3.Controls.Add(this.dgvSynergy);
-            this.tabPage3.Location = new System.Drawing.Point(4, 22);
-            this.tabPage3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabPage3.Location = new System.Drawing.Point(4, 25);
+            this.tabPage3.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.tabPage3.Size = new System.Drawing.Size(1130, 715);
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tabPage3.Size = new System.Drawing.Size(1509, 883);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "מטריצת התאמה";
             this.tabPage3.UseVisualStyleBackColor = true;
-            this.tabPage3.Click += new System.EventHandler(this.tabPage3_Click);
             // 
             // btnSaveSynergy
             // 
-            this.btnSaveSynergy.Location = new System.Drawing.Point(298, 592);
-            this.btnSaveSynergy.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnSaveSynergy.Location = new System.Drawing.Point(397, 729);
+            this.btnSaveSynergy.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnSaveSynergy.Name = "btnSaveSynergy";
-            this.btnSaveSynergy.Size = new System.Drawing.Size(496, 41);
+            this.btnSaveSynergy.Size = new System.Drawing.Size(661, 50);
             this.btnSaveSynergy.TabIndex = 2;
             this.btnSaveSynergy.Text = "שמור נתוני התאמה";
             this.btnSaveSynergy.UseVisualStyleBackColor = true;
@@ -397,25 +389,28 @@
             // 
             // dgvSynergy
             // 
+            this.dgvSynergy.AllowUserToAddRows = false;
+            this.dgvSynergy.AllowUserToDeleteRows = false;
+            this.dgvSynergy.AllowUserToResizeColumns = false;
+            this.dgvSynergy.AllowUserToResizeRows = false;
             this.dgvSynergy.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvSynergy.Location = new System.Drawing.Point(4, 5);
-            this.dgvSynergy.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.dgvSynergy.Location = new System.Drawing.Point(5, 6);
+            this.dgvSynergy.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.dgvSynergy.Name = "dgvSynergy";
             this.dgvSynergy.RowHeadersWidth = 51;
             this.dgvSynergy.RowTemplate.Height = 24;
-            this.dgvSynergy.Size = new System.Drawing.Size(1004, 583);
+            this.dgvSynergy.Size = new System.Drawing.Size(1339, 718);
             this.dgvSynergy.TabIndex = 0;
-            this.dgvSynergy.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvSynergy_CellContentClick);
             // 
             // tabPage4
             // 
             this.tabPage4.Controls.Add(this.dgvBacktrackingSchedule);
             this.tabPage4.Controls.Add(this.lblStatusBacktracking);
             this.tabPage4.Controls.Add(this.btnRunBacktracking);
-            this.tabPage4.Location = new System.Drawing.Point(4, 22);
-            this.tabPage4.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabPage4.Location = new System.Drawing.Point(4, 25);
+            this.tabPage4.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Size = new System.Drawing.Size(1130, 715);
+            this.tabPage4.Size = new System.Drawing.Size(1509, 883);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "השוואת Backtracking";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -424,30 +419,30 @@
             // dgvBacktrackingSchedule
             // 
             this.dgvBacktrackingSchedule.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvBacktrackingSchedule.Location = new System.Drawing.Point(544, 20);
-            this.dgvBacktrackingSchedule.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.dgvBacktrackingSchedule.Location = new System.Drawing.Point(725, 25);
+            this.dgvBacktrackingSchedule.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.dgvBacktrackingSchedule.Name = "dgvBacktrackingSchedule";
+            this.dgvBacktrackingSchedule.ReadOnly = true;
             this.dgvBacktrackingSchedule.RowHeadersWidth = 51;
             this.dgvBacktrackingSchedule.RowTemplate.Height = 24;
-            this.dgvBacktrackingSchedule.Size = new System.Drawing.Size(519, 479);
+            this.dgvBacktrackingSchedule.Size = new System.Drawing.Size(692, 590);
             this.dgvBacktrackingSchedule.TabIndex = 2;
             // 
             // lblStatusBacktracking
             // 
             this.lblStatusBacktracking.AutoSize = true;
-            this.lblStatusBacktracking.Location = new System.Drawing.Point(239, 95);
-            this.lblStatusBacktracking.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblStatusBacktracking.Location = new System.Drawing.Point(319, 117);
             this.lblStatusBacktracking.Name = "lblStatusBacktracking";
-            this.lblStatusBacktracking.Size = new System.Drawing.Size(68, 13);
+            this.lblStatusBacktracking.Size = new System.Drawing.Size(73, 16);
             this.lblStatusBacktracking.TabIndex = 1;
             this.lblStatusBacktracking.Text = "מוכן להרצה";
             // 
             // btnRunBacktracking
             // 
-            this.btnRunBacktracking.Location = new System.Drawing.Point(146, 171);
-            this.btnRunBacktracking.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnRunBacktracking.Location = new System.Drawing.Point(195, 210);
+            this.btnRunBacktracking.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnRunBacktracking.Name = "btnRunBacktracking";
-            this.btnRunBacktracking.Size = new System.Drawing.Size(273, 115);
+            this.btnRunBacktracking.Size = new System.Drawing.Size(364, 142);
             this.btnRunBacktracking.TabIndex = 0;
             this.btnRunBacktracking.Text = "החל הרצה";
             this.btnRunBacktracking.UseVisualStyleBackColor = true;
@@ -455,11 +450,11 @@
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1216, 737);
+            this.ClientSize = new System.Drawing.Size(1621, 907);
             this.Controls.Add(this.tabControl1);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "Form1";
             this.Text = "Form1";
             this.tabPage2.ResumeLayout(false);
