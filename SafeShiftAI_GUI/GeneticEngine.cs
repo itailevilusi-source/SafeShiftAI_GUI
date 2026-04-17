@@ -102,19 +102,24 @@ namespace SafeShiftAI_GUI
             while (nextGeneration.Count<100)
             {
                 //שני הורים אקראיים מתוך רשימת parents
-                int num = 0;
-                num = random.Next(0, parents.Count);
-                Chromosome parent1 = parents[num];
-                num = random.Next(0, parents.Count);
-                Chromosome parent2 = parents[num];
-                num = random.Next(0, 2);
+               int num1 = random.Next(0, parents.Count);
+                Chromosome parent1 = parents[num1];
+                int num2 = random.Next(0, parents.Count);
+                while (num2 == num1)//לא אותו הורה
+                {
+                    num2 = random.Next(0, parents.Count);
+                }
+                Chromosome parent2 = parents[num2];
+                int num = random.Next(0, 2);
 
                 Chromosome new_child= new Chromosome();//ילד חדש 
 
-                //החיתוך: ימים 0-14 מהורה א', ימים 15-29 מהורה ב
+                int crossoverPoint = random.Next(1, 29);//גיוון גנטי
+
+                //החיתוך: ימים 0-עד הנקודה מהורה א', ימים מהנקודה-29 מהורה ב
                 if (num == 0)//קודם הורה 1
                 {
-                    for (int day = 0; day < 15; day++)
+                    for (int day = 0; day < crossoverPoint; day++)
                     {
                         for (int shift = 0; shift < 3; shift++)
                         {
@@ -125,7 +130,7 @@ namespace SafeShiftAI_GUI
                         }
 
                     }
-                    for (int day = 15; day < 30; day++)
+                    for (int day = crossoverPoint; day < 30; day++)
                     {
                         for (int shift = 0; shift < 3; shift++)
                         {
@@ -141,7 +146,7 @@ namespace SafeShiftAI_GUI
                 }
                 else //קודם הורה 2
                 {
-                    for (int day = 0; day < 15; day++)
+                    for (int day = 0; day < crossoverPoint; day++)
                     {
                         for (int shift = 0; shift < 3; shift++)
                         {
@@ -152,7 +157,7 @@ namespace SafeShiftAI_GUI
                         }
 
                     }
-                    for (int day = 15; day < 30; day++)
+                    for (int day = crossoverPoint; day < 30; day++)
                     {
                         for (int shift = 0; shift < 3; shift++)
                         {

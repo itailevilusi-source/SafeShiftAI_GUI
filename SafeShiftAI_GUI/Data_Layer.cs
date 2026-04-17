@@ -156,7 +156,11 @@ namespace SafeShiftAI_GUI
                     int id1 = int.Parse(parts[0]);
                     int id2 = int.Parse(parts[1]);
                     //והערך הוא הציון
-                    if (id1 < 1000 && id2 < 1000) SynergyMatrix[id1, id2] = entry.Value;
+                    if (id1 < 1000 && id2 < 1000)
+                    {
+                        SynergyMatrix[id1, id2] = entry.Value;
+                        SynergyMatrix[id2, id1] = entry.Value; 
+                    }
                 }
             }
 

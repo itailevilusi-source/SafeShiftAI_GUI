@@ -147,6 +147,7 @@ namespace SafeShiftAI_GUI
         private async void btnRunAlgorithm_Click(object sender, EventArgs e)
         {
             btnRunAlgorithm.Enabled = false;// נועלים את הכפתור שהמשתמש לא יריץ כמה חישוביים גנטיים במקביל
+            btnRunBacktracking.Enabled = false;
             lblStatus.Text = "מתחיל תהליך";
 
             // ניקוי טבלה בהתחלה
@@ -268,7 +269,8 @@ namespace SafeShiftAI_GUI
             {
                 // שחרור כפתורים להרצה חוזרת 
                 btnRunAlgorithm.Enabled = true;
-               
+                btnRunBacktracking.Enabled = true;
+
             }
         }
 
@@ -277,10 +279,18 @@ namespace SafeShiftAI_GUI
         {
             //רק תהליך UI Thread רשאי לשנות את המסך
             // משתמשים ב-Invoke כדי לעדכן את המסך מתהליך הרקע
-            this.Invoke(new Action(() =>
+            if (this.IsDisposed || !this.IsHandleCreated) return;//בדיקה שהטופס לא נסגר או הולך להיסגר
+            
+            //האם הקוד הגיע מתהליך רקע
+            if (this.InvokeRequired)
             {
-                // עדכון הטקסט מה הציון והדור איך גבוהים שהגענו
-                lblStatus.Text = ($"דור: {generation} | ציון: {bestSoFar.Fitness:0.00}");
+                //האחריות עוזבת את תהליך הרקע ועוברת ל UI
+                this.BeginInvoke(new Action(() => GeneticEngine_OnGenerationImproved(bestSoFar, generation)));
+                return; 
+            }
+
+            // עדכון הטקסט מה הציון והדור איך גבוהים שהגענו
+            lblStatus.Text = ($"דור: {generation} | ציון: {bestSoFar.Fitness:0.00}");
 
                 // עדכון הגרף  
                 //מוודאים שיש כבר קו על המסך שיש להמשיך
@@ -296,7 +306,7 @@ namespace SafeShiftAI_GUI
                     chartFitness.Update();
                 }
                
-            }));
+           
         }
 
         //טבלת הסינגריה של העובדים
@@ -649,6 +659,7 @@ namespace SafeShiftAI_GUI
         private async void btnRunBacktracking_Click(object sender, EventArgs e)
         {
             btnRunBacktracking.Enabled = false;
+            btnRunAlgorithm.Enabled = false;
             lblStatusBacktracking.Text = "מריץ אלגוריתם נאיבי... נא להמתין זה ייקח כמה שניות";
             lblStatusBacktracking.ForeColor = System.Drawing.Color.Orange;
             dgvBacktrackingSchedule.DataSource = null; // ניקוי הטבלה
@@ -688,6 +699,7 @@ namespace SafeShiftAI_GUI
             finally
             {
                 btnRunBacktracking.Enabled = true;
+                btnRunAlgorithm.Enabled = true;
             }
         }
 
