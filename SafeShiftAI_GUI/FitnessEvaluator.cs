@@ -119,19 +119,7 @@ namespace SafeShiftAI_GUI
                             }
 
 
-                            //// חיפוש ברשימה לפי הid
-                            //var currentWorker = data.Employees.FirstOrDefault(e => e.ID == employeeId);
-
-                            //if (currentWorker != null && currentWorker.SickDays.Contains(day))
-                            //{
-                            //    score -= HARD_CONSTRAINT_PENALTY;
-                            //}
-
-                            //if (data.Employees[employeeId].SickDays.Contains(day))
-                            //{
-
-                            //    score -= HARD_CONSTRAINT_PENALTY;
-                            //}
+                        
 
                             //אם אין התאמה בין התפקיד למשבצת,קנס של 10,000 נקודות על כל משמרת שבה חסר אחד מהתפקידים הנדרשים
                             if (role==0&& currentEmp.Role != Employee.EmployeeRole.MGR)

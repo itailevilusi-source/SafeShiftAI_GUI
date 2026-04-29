@@ -266,57 +266,7 @@ namespace SafeShiftAI_GUI
             return this.BestSolution;
         }
 
-        ////אלגוריתם טיפוס גבעות מה שהופך את המערכת שלנו להיות מערכת היברידית למעשה נעשה החלפות עובדים באותו תפקיד אם הדבר ישפר נשאיר אם לא נבטל
-        //public void ExecuteLocalSearch(Chromosome BestSolution)
-        //{
-        //    double currentBestFitness = BestSolution.Fitness;
-
-        //    // עוברים על כל התפקידים מנהל, רופא ואז נהג
-        //    for (int role = 0; role < 3; role++)
-        //    {
-        //        for (int day1 = 0; day1 < 30; day1++)
-        //        {
-        //            for (int shift1 = 0; shift1 < 3; shift1++)
-        //            {
-        //                for (int day2 = 0; day2 < 30; day2++)
-        //                {
-        //                    for (int shift2 = 0; shift2 < 3; shift2++)
-        //                    {
-        //                        // דילוג על אותו עובד עם עצמו באותה משמרת
-        //                        if (day1 != day2 || shift1 != shift2)
-        //                        {
-
-        //                            // החלפה זמנית ניסיון ליצירת לוח טוב יותר עם החלפה אחת
-        //                            int temp_id = BestSolution.Schedule[day1, shift1, role];
-        //                        BestSolution.Schedule[day1, shift1, role] = BestSolution.Schedule[day2, shift2, role];
-        //                        BestSolution.Schedule[day2, shift2, role] = temp_id;
-
-        //                        // נחשב את הציון של הלוח אחרי ההחלפה
-        //                        double newFitness = fitnessEvaluator.CalculateFitness(BestSolution.Schedule);
-
-        //                        // אם הציון גבוה יותר נשאיר אם לא נחזיר
-        //                        if (newFitness > currentBestFitness)
-        //                        {
-        //                            // ישנו שיפור ולכן נשאיר את ההחלפה ונעדכן את הציון 
-        //                            currentBestFitness = newFitness;
-        //                            BestSolution.Fitness = newFitness;
-        //                        }
-        //                        else
-        //                        {
-        //                            //אם אין שיפור או שהציון ירד נחזיר חזרה למצב הקודם
-        //                            temp_id = BestSolution.Schedule[day1, shift1, role];
-        //                            BestSolution.Schedule[day1, shift1, role] = BestSolution.Schedule[day2, shift2, role];
-        //                            BestSolution.Schedule[day2, shift2, role] = temp_id;
-        //                        }
-
-        //                        }
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
-
+        
 
 
         ////אלגוריתם טיפוס גבעות מה שהופך את המערכת שלנו להיות מערכת היברידית למעשה נעשה החלפות עובדים באותו תפקיד אם הדבר ישפר נשאיר אם לא נבטל
