@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend4 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.lblStatus = new System.Windows.Forms.Label();
             this.lblFitness = new System.Windows.Forms.Label();
@@ -116,18 +116,18 @@
             // 
             // chartFitness
             // 
-            chartArea4.Name = "ChartArea1";
-            this.chartFitness.ChartAreas.Add(chartArea4);
-            legend4.Name = "Legend1";
-            this.chartFitness.Legends.Add(legend4);
+            chartArea1.Name = "ChartArea1";
+            this.chartFitness.ChartAreas.Add(chartArea1);
+            legend1.Name = "Legend1";
+            this.chartFitness.Legends.Add(legend1);
             this.chartFitness.Location = new System.Drawing.Point(977, 103);
             this.chartFitness.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.chartFitness.Name = "chartFitness";
-            series4.ChartArea = "ChartArea1";
-            series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
-            series4.Legend = "Legend1";
-            series4.Name = "Series1";
-            this.chartFitness.Series.Add(series4);
+            series1.ChartArea = "ChartArea1";
+            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
+            series1.Legend = "Legend1";
+            series1.Name = "Series1";
+            this.chartFitness.Series.Add(series1);
             this.chartFitness.Size = new System.Drawing.Size(413, 517);
             this.chartFitness.TabIndex = 9;
             this.chartFitness.Text = "chart1";
@@ -258,6 +258,7 @@
             // 
             this.txtRealID.Location = new System.Drawing.Point(148, 337);
             this.txtRealID.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.txtRealID.MaxLength = 9;
             this.txtRealID.Name = "txtRealID";
             this.txtRealID.Size = new System.Drawing.Size(215, 22);
             this.txtRealID.TabIndex = 9;

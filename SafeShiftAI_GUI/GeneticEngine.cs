@@ -235,57 +235,6 @@ namespace SafeShiftAI_GUI
         // הוספת משתנה מחלקה שיחזיק את הפתרון הסופי
         public Chromosome BestSolution { get; private set; }
 
-        //public Chromosome RunEvolution()
-        //{
-        //    // אתחול האוכלוסייה
-        //    InitializePopulation();
-
-        //    //  לולאת 3000 דורות
-        //    for (int gen = 0; gen < 3000; gen++)
-        //    {
-        //        // קריאה לשלבים של האלגוריתם הגנטי:
-
-        //        // Selection
-        //        ExecuteSelection();
-        //        // Crossover
-        //        ExecuteCrossover();
-        //        // Mutation
-        //        ExecuteMutation();
-
-        //        // הגנה: בדיקה שהרשימה לא ריקה לפני הגישה לאינדקס 0
-        //        if (Chromosomes != null && Chromosomes.Count > 0)
-        //        {
-        //            // הדפסה כל 100 דורות כדי לראות התקדמות
-        //            if (gen % 100 == 0)
-        //            {
-        //                Console.WriteLine($"Generation {gen}: Best Fitness = {Chromosomes[0].Fitness}");
-        //            }
-        //        }
-        //        else
-        //        {
-        //            // אם הגענו לכאן, משהו בתהליך איפס את הרשימה - ננסה לאתחל אותה מחדש
-        //            Console.WriteLine($"Warning: Population lost at generation {gen}. Re-initializing...");
-        //            InitializePopulation();
-        //        }
-        //    }
-
-        //    //  שמירת הפתרון הסופי הטוב ביותר לפני החזרתו
-        //    if (Chromosomes != null && Chromosomes.Count > 0)
-        //    {
-        //        // Clone שמירת עותק באמצעות
-        //        this.BestSolution = Chromosomes[0].Clone();
-        //    }
-        //    else
-        //    {
-        //        this.BestSolution = new Chromosome();
-        //    }
-
-        //    Console.WriteLine("-----------------------------------------------");
-        //    Console.WriteLine("Optimization Finished Successfully (3000 Generations)!");
-
-        //    return this.BestSolution;
-        //}
-
         // הגדרת אירוע שישלח את הכרומוזום הטוב ביותר הנוכחי ואת מספר הדור
         public event Action<Chromosome, int> OnGenerationImproved;
 
@@ -479,39 +428,8 @@ namespace SafeShiftAI_GUI
             return uiList;
         }
     
-    //public void DisplayWeeklySchedule(Chromosome best)
-    //{
-    //    Console.WriteLine("\n=== SafeShift AI: Weekly Schedule Result (First 7 Days) ===");
-    //    Console.WriteLine("------------------------------------------------------------");
-    //    Console.WriteLine("| Day | Shift   | Manager (MGR) | Doctor (MED) | Driver (DRV) |");
-    //    Console.WriteLine("------------------------------------------------------------");
-
-    //    string[] shiftNames = { "Morning", "Evening", "Night" };
-
-    //    for (int day = 0; day < 7; day++)
-    //    {
-    //        for (int shift = 0; shift < 3; shift++)
-    //        {
-    //            int mgrId = best.Schedule[day, shift, 0];
-    //            int medId = best.Schedule[day, shift, 1];
-    //            int drvId = best.Schedule[day, shift, 2];
-
-    //            Console.WriteLine($"| {day + 1,-3} | {shiftNames[shift],-7} | ID: {mgrId,-10} | ID: {medId,-10} | ID: {drvId,-10} |");
-    //        }
-    //        Console.WriteLine("------------------------------------------------------------");
-    //    }
-    //}
-
 
 
 }
-    // מחלקה שתייצג שורה בטבלה הגרפית
-    public class ShiftDisplayModel
-    {
-        public string Day { get; set; }
-        public string Shift { get; set; }
-        public string ManagerID { get; set; }
-        public string DoctorID { get; set; }
-        public string DriverID { get; set; }
-    }
+    
 }

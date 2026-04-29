@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="SafeShiftAI_GUI.BacktrackingSolver">
+    <Position X="5.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAggAAQIAgAAAAAQAggAgAAIACAAAQAAAAAUAAABAAA=</HashCode>
+      <FileName>BacktrackingSolver.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SafeShiftAI_GUI.Chromosome">
+    <Position X="8.5" Y="12.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAABA=</HashCode>
+      <FileName>Chromosome.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SafeShiftAI_GUI.Data_Layer">
+    <Position X="10.75" Y="11" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ChAAAAAAAAQAAAAAAAAAAAIACAAgAAAAAAQAAAAABAQ=</HashCode>
+      <FileName>Data_Layer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SafeShiftAI_GUI.DatabaseHelper">
+    <Position X="10.75" Y="15" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAAEAAAAJAgAgAEAAAAAAAAABAAAAAAgAAAACAAAA=</HashCode>
+      <FileName>DatabaseHelper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SafeShiftAI_GUI.Employee">
+    <Position X="12.5" Y="11" Width="1.5" />
+    <NestedTypes>
+      <Enum Name="SafeShiftAI_GUI.Employee.EmployeeRole" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Employee.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAAAgAAAEAAAAAQIAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Employee.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SafeShiftAI_GUI.FitnessEvaluator">
+    <Position X="10.75" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAAiBAAAAQABAAAAAAAACAARAAAAAQAAAAAAA=</HashCode>
+      <FileName>FitnessEvaluator.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="data" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="SafeShiftAI_GUI.Form1">
+    <Position X="7.5" Y="0.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>CYCTQABAgCFAQFQAEACISAgGAFxAwigLQCSQAAAhBAQ=</HashCode>
+      <FileName>Form1.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="geneticEngine" />
+      <Field Name="dbHelper" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="SafeShiftAI_GUI.GeneticEngine">
+    <Position X="7.75" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAgAACAAAAAACAgAAAACKAAAYAEAQASAIAAAAAA=</HashCode>
+      <FileName>GeneticEngine.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="fitnessEvaluator" />
+      <Field Name="data_layer" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Field Name="Chromosomes" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="SafeShiftAI_GUI.ShiftDisplayModel">
+    <Position X="5.75" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AhAAAAAAIAAAAAgAAAAIAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ShiftDisplayModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SafeShiftAI_GUI.Program">
+    <Position X="9.25" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

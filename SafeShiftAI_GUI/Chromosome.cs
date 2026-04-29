@@ -11,7 +11,7 @@ namespace SafeShiftAI_GUI
         // המערך התלת-ממדי - מייצג לוח שיבוץ שלם
         public int[,,] Schedule { get; set; }
 
-        // הציון של הלוח הזה (יחושב על ידי ה-FitnessEvaluator)
+        // הציון של הלוח הזה יחושב על ידי ה-FitnessEvaluator
         public double Fitness { get; set; }
 
         public Chromosome()

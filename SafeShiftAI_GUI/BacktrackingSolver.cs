@@ -44,7 +44,7 @@ namespace SafeShiftAI_GUI
 
 
 
-        // בנאי (Constructor) 
+       
         public BacktrackingSolver(Data_Layer dataManager)
         {
             this.data = dataManager;
