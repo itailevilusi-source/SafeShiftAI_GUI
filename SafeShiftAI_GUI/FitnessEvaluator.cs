@@ -60,28 +60,28 @@ namespace SafeShiftAI_GUI
             {
                 HashSet<int> workersToday = new HashSet<int>();//רשימה של עובדים שעבדו היום
 
-                //מניעת משמרת בוקר אחרי לילה: קנס של 100 נקודות על כל עובד המשובץ לבוקר מיד לאחר משמרת לילה
+                // מניעת משמרת בוקר אחרי לילה: קנס של 100 נקודות על כל עובד המשובץ לבוקר מיד לאחר משמרת לילה-כל התפקידים
 
                 if (day < 29) // כדי לא לחרוג מהמערך בחיפוש על מחר
                 {
-
-                    // רצים על 3 התפקידים מנהל, רופא, נהג
-                    for (int role = 0; role < 3; role++)
+                    //רצים על כל תפקידי הלילה
+                    for (int roleNight = 0; roleNight < 3; roleNight++)
                     {
-                        // עובד במשמרת לילה של היום (day, shift=2)
-                        int empIdNight = chromosome[day, 2, role];
-
-                        // עובד במשמרת בוקר של מחר (day+1, shift=0)
-                        int empIdMorning = chromosome[day + 1, 0, role];
-
-                        //  בדיקה ששניהם לא אפס כדי למנוע באגים
-                        if (empIdNight != 0 && empIdMorning != 0 && empIdNight == empIdMorning)
+                        int empIdNight = chromosome[day, 2, roleNight];
+                        if (empIdNight != 0)
                         {
-                            // אותו עובד שובץ לבוקר מיד אחרי לילה
-                            score -= SOFT_CONSTRAINT_PENALTY;
+                            //רצים על כל התפקידים בבוקר
+                            for (int roleMorning = 0; roleMorning < 3; roleMorning++)
+                            {
+                                int empIdMorning = chromosome[day + 1, 0, roleMorning];
+                                if (empIdNight == empIdMorning)
+                                {
+                                    score -= SOFT_CONSTRAINT_PENALTY;
+                                }
+                            }
                         }
                     }
-                   
+
                 }
 
 

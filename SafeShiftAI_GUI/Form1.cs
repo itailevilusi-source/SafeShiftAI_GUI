@@ -81,6 +81,12 @@ namespace SafeShiftAI_GUI
                 return;
             }
 
+            if (realId.Length != 9 || !realId.All(char.IsDigit))
+            {
+                MessageBox.Show("תעודת זהות חייבת להכיל בדיוק 9 ספרות");
+                return;
+            }
+
             // שמירה העובד במסד הנתונים  
             dbHelper.AddEmployee(realId, name, role, seniority);
 
@@ -170,6 +176,22 @@ namespace SafeShiftAI_GUI
                //טעינה של הדאטה 
                 Data_Layer currentData = new Data_Layer();
                 if (currentData.Employees.Count == 0) throw new Exception("אין עובדים!");
+
+                if (currentData.ManagerIDs.Count < 10 || currentData.DoctorIDs.Count < 10 || currentData.DriverIDs.Count < 10)
+                    throw new Exception("חובה להזין לפחות 10 עובדים מכל תפקיד (מנהל, רופא, נהג) לפני הרצה ");
+
+                bool hasSynergyData = false;
+                foreach (int score in currentData.SynergyMatrix)
+                {
+                    if (score != 0) 
+                    { 
+                        hasSynergyData = true;
+                    }
+                }
+                if (!hasSynergyData)
+                {
+                    MessageBox.Show("אזהרה: לא הוזנו נתוני התאמה (סינרגיה) בין העובדים\n האלגוריתם יתקשה למצוא פתרון חוקי - מומלץ לעדכן את המטריצה ", "אזהרת סינרגיה", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
 
                 geneticEngine = new GeneticEngine(currentData);
                 geneticEngine.OnGenerationImproved += GeneticEngine_OnGenerationImproved;//בכל פעם שמוצאים דור יותר טוב מציירים נקודה בגרף באמצעות הפונקציה
