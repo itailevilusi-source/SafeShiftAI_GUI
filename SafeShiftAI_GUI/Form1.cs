@@ -292,7 +292,7 @@ namespace SafeShiftAI_GUI
                 // שחרור כפתורים להרצה חוזרת 
                 btnRunAlgorithm.Enabled = true;
                 btnRunBacktracking.Enabled = true;
-
+                
             }
         }
 
@@ -776,6 +776,133 @@ namespace SafeShiftAI_GUI
         }
 
         private void tabPage4_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private async void btnRunBenchmark_Click(object sender, EventArgs e)
+        {
+            btnRunBenchmark.Enabled = false;
+            btnRunAlgorithm.Enabled = false;
+            btnRunBacktracking.Enabled = false;
+
+            // ברירת מחדל 10 
+            int iterations = 10;
+            Control[] numControls = this.Controls.Find("numRuns", true);
+            if (numControls.Length > 0 && numControls[0] is NumericUpDown)
+            {
+                iterations = (int)((NumericUpDown)numControls[0]).Value;
+            }
+
+
+            try
+            {
+                Data_Layer currentData = new Data_Layer();
+                if (currentData.Employees.Count == 0) throw new Exception("אין עובדים במערכת");
+
+                //נפרד Thread  
+                var results = await Task.Run(() =>
+                {
+                    double fullAvg = 0;
+                    double noMutAvg = 0;
+                    double noElitAvg = 0;
+                    double dumbAvg = 0;
+
+                    double fullBest = double.MinValue;
+                    double noMutBest = double.MinValue;
+                    double noElitBest = double.MinValue;
+                    double dumbBest = double.MinValue;
+
+                    for (int i = 0; i < iterations; i++)
+                    {
+                       // אלגוריתם מלא היברידי 
+                        var engineFull = new GeneticEngine(currentData);
+                        engineFull.RunEvolution(useElitism: true, useMutation: true);
+                        engineFull.ExecuteLocalSearch(engineFull.BestSolution); // תוספת טיפוס גבעות
+                        double s1 = engineFull.BestSolution.Fitness;
+                        fullAvg += s1;
+                        if (s1 > fullBest) fullBest = s1;
+
+                        //  ללא מוטציה
+                        var engineNoMut = new GeneticEngine(currentData);
+                        engineNoMut.RunEvolution(useElitism: true, useMutation: false);
+                        double s2 = engineNoMut.BestSolution.Fitness;
+                        noMutAvg += s2;
+                        if (s2 > noMutBest) noMutBest = s2;
+
+                        //  ללא אליטיזם 
+                        var engineNoElit = new GeneticEngine(currentData);
+                        engineNoElit.RunEvolution(useElitism: false, useMutation: true);
+                        double s3 = engineNoElit.BestSolution.Fitness;
+                        noElitAvg += s3;
+                        if (s3 > noElitBest) noElitBest = s3;
+
+                        //  אלגוריתם טיפש 
+                        var engineDumb = new GeneticEngine(currentData);
+                        engineDumb.RunEvolution(useElitism: false, useMutation: false);
+                        double s4 = engineDumb.BestSolution.Fitness;
+                        dumbAvg += s4;
+                        if (s4 > dumbBest) dumbBest = s4;
+                    }
+
+                    // חישוב ממוצעים
+                    fullAvg /= iterations;
+                    noMutAvg /= iterations;
+                    noElitAvg /= iterations;
+                    dumbAvg /= iterations;
+
+                    // החזרת רשימה מסודרת לטבלה
+                    return new[]
+                    {
+                        new { Configuration = " אלגוריתם מלא היברידי ", AverageFitness = fullAvg.ToString("N0"), BestFitness = fullBest.ToString("N0")},
+                        new { Configuration = " גנטי ללא מוטציה ", AverageFitness = noMutAvg.ToString("N0"), BestFitness = noMutBest.ToString("N0") },
+                        new { Configuration = " גנטי ללא אליטיזם", AverageFitness = noElitAvg.ToString("N0"), BestFitness = noElitBest.ToString("N0") },
+                        new { Configuration = " חיפוש אקראי  ללא סלקציה ומוטציה", AverageFitness = dumbAvg.ToString("N0"), BestFitness = dumbBest.ToString("N0") }
+                    }.ToList();
+                });
+
+                // עדכון הטבלה
+                Control[] gridControls = this.Controls.Find("dgvAblationResults", true);
+                if (gridControls.Length > 0 && gridControls[0] is DataGridView dgv)
+                {
+                    dgv.DataSource = results;
+                    dgv.Columns[0].HeaderText = "סוג אלגוריתם";
+                    dgv.Columns[1].HeaderText = "ציון כושר ממוצע";
+                    dgv.Columns[2].HeaderText = "ציון כושר מקסימלי - הטוב ביותר";
+
+                    // עיצוב שורת המנצח 
+                    dgv.Rows[0].DefaultCellStyle.BackColor = System.Drawing.Color.LightGreen;
+                    dgv.Rows[0].DefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 10, System.Drawing.FontStyle.Bold);
+
+                    // הגדלת גובה השורות כדי שהטקסט לא יחתך
+                    dgv.RowTemplate.Height = 60; 
+
+                    // מאפשר לטקסט לרדת שורה בתוך התא אם העמודה צרה מדי
+                    dgv.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+
+                    // מתאים אוטומטית את גובה השורה לתוכן
+                    dgv.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+
+                    StyleGrid(dgv); // שימוש בפונקציית העיצוב שכבר יש 
+                }
+
+                lblStatus.Text = $"המחקר  הסתיים האלגוריתם המלא הוכח כיעיל ביותר";
+                lblStatus.ForeColor = System.Drawing.Color.Green;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("שגיאה בהרצת בנצ'מרק: " + ex.Message, "שגיאה", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                lblStatus.Text = "שגיאה";
+            }
+            finally
+            {
+                btnRunBenchmark.Enabled = true;
+                btnRunAlgorithm.Enabled = true;
+                btnRunBacktracking.Enabled = true;
+            }
+        }
+
+        private void tabPageStatistics_Click(object sender, EventArgs e)
         {
 
         }

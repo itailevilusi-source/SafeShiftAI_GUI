@@ -13,7 +13,7 @@ namespace SafeShiftAI_GUI
         List<Chromosome> Chromosomes = new List<Chromosome>();
         Data_Layer data_layer;
         FitnessEvaluator fitnessEvaluator;
-        Random random = new Random();
+        static Random random = new Random();
         
         public GeneticEngine(Data_Layer data_layer)
         {
@@ -58,7 +58,7 @@ namespace SafeShiftAI_GUI
         List<Chromosome> nextGeneration = new List<Chromosome>();
 
         //Truncation Selection  
-        public void ExecuteSelection()
+        public void ExecuteSelection(bool useElitism = true)
         {
             //בדיקה שיש לפחות איבר אחד למיון
             if (Chromosomes.Count > 0)
@@ -66,13 +66,18 @@ namespace SafeShiftAI_GUI
                 Chromosomes.Sort((c1, c2) => c2.Fitness.CompareTo(c1.Fitness));//מיון מהגבוה לנמוך באמצעות פונקציית מיון ושימוש בלמדה =
             }                                                        
             nextGeneration.Clear();
-            //Elitism
-            int ElitismCount = Math.Min(5, Chromosomes.Count);
-            for (int i = 0; i < ElitismCount; i++)// אליטיזם: 5 הכי טובים עוברים ישר לדור הבא
+
+            if (useElitism)
             {
-                //זה מבטיח שהפתרונות הכי טובים שמצאנו לא ייהרסו בטעות על ידי מוטציה או זיווג גרוע ובנוסף הציון הכולל של המערכת לעולם לא יירד
-                nextGeneration.Add(Chromosomes[i].Clone()); //  להעתקה Clone
+                //Elitism
+                int ElitismCount = Math.Min(5, Chromosomes.Count);
+                for (int i = 0; i < ElitismCount; i++)// אליטיזם: 5 הכי טובים עוברים ישר לדור הבא
+                {
+                    //זה מבטיח שהפתרונות הכי טובים שמצאנו לא ייהרסו בטעות על ידי מוטציה או זיווג גרוע ובנוסף הציון הכולל של המערכת לעולם לא יירד
+                    nextGeneration.Add(Chromosomes[i].Clone()); //  להעתקה Clone
+                }
             }
+            
 
             parents.Clear();
             // סלקציה: לוקחים את 25 הטובים ביותר שיהיו הורים
@@ -189,8 +194,10 @@ namespace SafeShiftAI_GUI
 
         }
 
-        public void ExecuteMutation()
+        public void ExecuteMutation(bool useMutation = true)
         {
+            if (!useMutation) return;
+
             int num = 0;
             int day_1 = 0;
             int shift_1 = 0;
@@ -238,16 +245,16 @@ namespace SafeShiftAI_GUI
         // הגדרת אירוע שישלח את הכרומוזום הטוב ביותר הנוכחי ואת מספר הדור
         public event Action<Chromosome, int> OnGenerationImproved;
 
-        public Chromosome RunEvolution()
+        public Chromosome RunEvolution(bool useElitism = true, bool useMutation = true)
         {
             InitializePopulation();
             double lastBestFitness = double.MinValue;
 
             for (int gen = 0; gen < 3000; gen++)
             {
-                ExecuteSelection();
+                ExecuteSelection(useElitism);
                 ExecuteCrossover();
-                ExecuteMutation();
+                ExecuteMutation(useMutation);
 
                 if (Chromosomes != null && Chromosomes.Count > 0)
                 {

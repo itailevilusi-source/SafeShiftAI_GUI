@@ -50,7 +50,7 @@ namespace SafeShiftAI_GUI
                     else if (roleStr == "doctor") myRole = Employee.EmployeeRole.MED;
                     else if (roleStr == "driver") myRole = Employee.EmployeeRole.DRV;
 
-                    // שימוש בבנאי החדש שלך עם realId
+                    
                     Employee emp = new Employee(id, realId, name, myRole, seniority);
                     Employees.Add(emp);
 
