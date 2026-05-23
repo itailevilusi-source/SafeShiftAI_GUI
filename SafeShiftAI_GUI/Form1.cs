@@ -371,7 +371,7 @@ namespace SafeShiftAI_GUI
                 // יצירת ראשי תיבות לשם העמודה כדי לחסוך מקום היה לי מאוד צפוף בעין "Avi Cohen" ל "Avi C."
                 string shortName = empName;
                 var parts = empName.Split(' ');
-                if (parts.Length > 1) shortName = $"{parts[0]} {parts[1][0]}.";
+                if (parts.Length > 1) shortName = $"{parts[0]} .{parts[1][0]}";
 
                 //מזהה פנימי לעמודה "col_6"
                 string colName = "col_" + empId;
@@ -469,7 +469,7 @@ namespace SafeShiftAI_GUI
             StyleButton(btnSaveSickDays);
             StyleButton(btnRunAlgorithm);
 
-            Control[] matches = this.Controls.Find("btnSaveSynergy", true);//חיפוש הכפתור באמצעות רקורסיה
+            Control[] matches = this.Controls.Find("btnSaveSynergy", true);//חיפוש הכפתור באמצעות רקורסיה כי נמצא ב tab2
             if (matches.Length > 0 && matches[0] is Button) StyleButton((Button)matches[0]);
 
             // עיצוב טבלאות
