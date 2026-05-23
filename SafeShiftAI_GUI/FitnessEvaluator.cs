@@ -55,6 +55,11 @@ namespace SafeShiftAI_GUI
         {
             double score = INITIAL_SCORE; // ציון בסיס לפי ההצעה
 
+            //====================================================
+            //  ניצור מילון שיספור כמה משמרות כל עובד קיבל בלוח הנוכחי
+            Dictionary<int, int> monthlyShiftCount = new Dictionary<int, int>();
+            //====================================================
+
             // לולאה ראשונה: עוברת על כל יום - 30 ימים בחודש
             for (int day = 0; day < 30; day++)
             {
@@ -96,8 +101,16 @@ namespace SafeShiftAI_GUI
 
                         //בדיקה כפילות עובד במשמרת , קנס של 10,000 נקודות עבור כל משמרת שבה עובד משובץ יותר מפעם אחת
                         if (employeeId != 0 &&_employeeMap.TryGetValue(employeeId, out Employee currentEmp))
-                     {  
+                     {
                             //Employee currentEmp = _employeeMap[employeeId];שגיאת חריגה
+
+                            //====================================================
+                            if (!monthlyShiftCount.ContainsKey(employeeId))//האם העובד כבר קיים במילון
+                            {
+                                monthlyShiftCount[employeeId] = 0;
+                            }
+                            monthlyShiftCount[employeeId]++;
+                            //====================================================
 
                             if (workersToday.Contains(employeeId))
                         {
@@ -187,28 +200,9 @@ namespace SafeShiftAI_GUI
             // אילוץ עומס חודשי: מקסימום 9 משמרות בחודש לעובד כמו ב-Backtracking
             // =========================================================
 
-            //  ניצור מילון שיספור כמה משמרות כל עובד קיבל בלוח הנוכחי
-            Dictionary<int, int> monthlyShiftCount = new Dictionary<int, int>();
-            for (int d = 0; d < 30; d++)
-            {
-                for (int s = 0; s < 3; s++)
-                {
-                    for (int r = 0; r < 3; r++)
-                    {
-                        int empId = chromosome[d, s, r];
-                        if (empId != 0) // אם יש פה עובד 
-                        {
-                            if (!monthlyShiftCount.ContainsKey(empId))//האם העובד כבר קיים במילון?
-                            {
-                                monthlyShiftCount[empId] = 0;
-                            }
-                            monthlyShiftCount[empId]++;
-                        }
-                    }
-                }
-            }
+          
 
-            // 2. נעבור על כל העובדים, ומי שעבר 9 משמרות יחטוף קנס קשה!
+            //  נעבור על כל העובדים, ומי שעבר 9 משמרות יחטוף קנס קשה
             foreach (var kvp in monthlyShiftCount)
             {
                 int shifts = kvp.Value;
